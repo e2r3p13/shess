@@ -1,19 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.rs                                            :+:      :+:    :+:   */
+/*   game.rs                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/02/26 16:36:03 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/02/26 17:59:12 by lfalkau          ###   ########.fr       */
+/*   Created: 2020/02/26 17:50:17 by lfalkau           #+#    #+#             */
+/*   Updated: 2020/02/26 17:52:54 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-use crate::src::menu;
-use crate::src::game;
+use menu;
 
-fn main() {
-    let mode = menu::shess_menu();
-	game::shess(mode);
+pub fn shess(mode: menu::Mode) {
+
 }
