@@ -6,12 +6,12 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/26 16:36:03 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/02/26 17:59:12 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/02/26 18:03:57 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-use crate::src::menu;
-use crate::src::game;
+mod menu;
+mod game;
 
 fn main() {
     let mode = menu::shess_menu();
