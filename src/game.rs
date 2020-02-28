@@ -6,7 +6,7 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/26 17:50:17 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/02/28 09:52:58 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/02/28 10:41:01 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ pub fn start()
 	while !someone_has_won()
 	{
 		board::print(board);
-		play(turn % 2, &mut board);
+		play(1, &mut board);
 		turn += 1;
 	}
 }
