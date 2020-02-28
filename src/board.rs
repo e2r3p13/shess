@@ -6,7 +6,7 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 19:52:59 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/02/27 20:45:31 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/02/28 08:33:00 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,20 +53,20 @@ pub fn print(board: [[char; 8]; 8])
 			{
 				if is_black
 				{
-					print!("{}", format!(" {} ", c).bright_blue().on_bright_yellow().bold());
+					print!("{}", format!(" {} ", c).black().on_bright_yellow());
 				}
 				else
 				{
-					print!("{}", format!(" {} ", c).black().on_bright_yellow());
+					print!("{}", format!(" {} ", c).bright_blue().on_bright_yellow().bold());
 				}
 			} else {
 				if is_black
 				{
-					print!("{}", format!(" {} ", c).bright_yellow().on_bright_blue().bold());
+					print!("{}", format!(" {} ", c).black().on_bright_blue());
 				}
 				else
 				{
-					print!("{}", format!(" {} ", c).black().on_bright_blue());
+					print!("{}", format!(" {} ", c).bright_yellow().on_bright_blue().bold());
 				}
 			}
 		}

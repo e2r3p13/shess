@@ -6,7 +6,7 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/26 17:50:17 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/02/27 22:43:04 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/02/28 08:34:42 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,19 +32,30 @@ fn play(turn: u8, board: &[[char; 8]; 8])
 {
 	loop
 	{
-		print!("{}", format!("{}", "White's turn, what do you want to do ? ".bright_yellow()));
+		match turn
+		{
+			0 => print!("{}", format!("{}", "White's turn, what do you want to do ? ".bright_yellow())),
+			1 => print!("{}", format!("{}", "Black's turn, what do you want to do ? ".bright_yellow())),
+			_ => panic!("Impossible statement")
+		}
 		io::stdout().flush().unwrap();
 		let mut input = String::new();
 		io::stdin().read_line(&mut input).expect("Error: read error");
 		if let Ok(m) = mv::parse(&input)
 		{
-			if mv::try_proceed(m, board)
+			if  !mv::is_yours(&m, board, turn)
 			{
-				return ;
+				println!("{}", format!("{}", "You don't have any piece in here.".bright_red()));
+				continue;
 			}
-			println!("{}", format!("{}", "It's not reasonable.".bright_red()));
+			if  !mv::try_proceed(&m, board)
+			{
+				println!("{}", format!("{}", "It's not reasonable.".bright_red()));
+				continue;
+			}
+			return;
 		}
-		println!("{}", format!("{}", "Format: e6 to a4".bright_red()));
+		println!("{}", format!("{}", "Format: XX to XX / XX from XX".bright_red()));
 	}
 
 }

@@ -6,7 +6,7 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 22:37:02 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/02/27 22:42:11 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/02/28 08:42:53 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,30 +20,45 @@ pub struct Move
 
 pub fn parse(input: &str) -> Result<Move, io::Error>
 {
-	let from;
-	let to;
-	let word;
-	let fields: Vec<&str> = input.split_whitespace().collect();
+	let input = input.to_lowercase();
+	let f: Vec<&str> = input.split_whitespace().collect();
 
-	if fields.len() != 3
+	if f.len() != 3
 	{
 		return Err(io::Error::new(io::ErrorKind::Other, "oh no!"));
 	}
-	from = input_to_pos(fields[0])?;
-	word = fields[1];
-	to = input_to_pos(fields[2])?;
-	return if word == "to" {
-		Ok(Move { from, to })
-	} else if word == "from" {
-		Ok(Move { to, from })
-	} else {
+	let from = input_to_pos(f[0])?;
+	let to = input_to_pos(f[2])?;
+	return if f[1] == "to"
+	{
+		Ok(Move { from: from, to: to })
+	}
+	else if f[1] == "from"
+	{
+		Ok(Move { from: to, to: from })
+	}
+	else
+	{
 		Err(io::Error::new(io::ErrorKind::Other, "oh no!"))
 	};
 }
 
-pub fn try_proceed(mv: Move, board: &[[char; 8]; 8]) -> bool
+pub fn try_proceed(mv: &Move, board: &[[char; 8]; 8]) -> bool
 {
 	true
+}
+
+pub fn is_yours(m: &Move, board: &[[char; 8]; 8], turn: u8) -> bool
+{
+	if turn == 0 && board[m.from[0] as usize][m.from[1] as usize].is_lowercase()
+	{
+		return true;
+	}
+	if turn == 1 && board[m.from[0] as usize][m.from[1] as usize].is_uppercase()
+	{
+		return true;
+	}
+	return false;
 }
 
 fn input_to_pos(it: &str) -> Result<[u8; 2], io::Error>
