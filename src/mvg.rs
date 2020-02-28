@@ -1,21 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   mv.rs                                              :+:      :+:    :+:   */
+/*   mvg.rs                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 22:37:02 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/02/28 08:42:53 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/02/28 09:50:49 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 use std::io;
+use crate::mvp;
 
 pub struct Move
 {
-	from: [u8; 2],
-	to: [u8; 2],
+	pub from: [i8; 2],
+	pub to: [i8; 2],
 }
 
 pub fn parse(input: &str) -> Result<Move, io::Error>
@@ -43,9 +44,25 @@ pub fn parse(input: &str) -> Result<Move, io::Error>
 	};
 }
 
-pub fn try_proceed(mv: &Move, board: &[[char; 8]; 8]) -> bool
+pub fn try_proceed(m: &Move, board: &mut [[char; 8]; 8]) -> bool
 {
-	true
+	let piece: mvp::Piece;
+	return match board[m.from[0] as usize][m.from[1] as usize]
+	{
+		'P' => mvp::move_black_pawn(m, board),
+		'R' => mvp::move_black_rock(m, board),
+		'H' => mvp::move_black_knight(m, board),
+		'B' => mvp::move_black_bishop(m, board),
+		'Q' => mvp::move_black_queen(m, board),
+		'K' => mvp::move_black_king(m, board),
+		'p' => mvp::move_white_pawn(m, board),
+		'r' => mvp::move_white_rock(m, board),
+		'h' => mvp::move_white_knight(m, board),
+		'b' => mvp::move_white_bishop(m, board),
+		'q' => mvp::move_white_queen(m, board),
+		'k' => mvp::move_white_king(m, board),
+		_ => panic!("Impossible statement")
+	};
 }
 
 pub fn is_yours(m: &Move, board: &[[char; 8]; 8], turn: u8) -> bool
@@ -61,7 +78,7 @@ pub fn is_yours(m: &Move, board: &[[char; 8]; 8], turn: u8) -> bool
 	return false;
 }
 
-fn input_to_pos(it: &str) -> Result<[u8; 2], io::Error>
+fn input_to_pos(it: &str) -> Result<[i8; 2], io::Error>
 {
 	let mut pos = [0, 0];
 

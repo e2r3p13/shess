@@ -6,13 +6,14 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/26 16:36:03 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/02/27 22:38:56 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/02/28 08:56:53 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 mod game;
 mod board;
-mod mv;
+mod mvp;
+mod mvg;
 
 fn main() {
 

@@ -6,13 +6,13 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/26 17:50:17 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/02/28 08:34:42 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/02/28 09:52:58 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 use colored::*;
 use crate::board;
-use crate::mv;
+use crate::mvg;
 use std::io;
 use std::io::{Write};
 
@@ -23,12 +23,12 @@ pub fn start()
 	while !someone_has_won()
 	{
 		board::print(board);
-		play(turn % 2, &board);
+		play(turn % 2, &mut board);
 		turn += 1;
 	}
 }
 
-fn play(turn: u8, board: &[[char; 8]; 8])
+fn play(turn: u8, board: &mut [[char; 8]; 8])
 {
 	loop
 	{
@@ -41,14 +41,14 @@ fn play(turn: u8, board: &[[char; 8]; 8])
 		io::stdout().flush().unwrap();
 		let mut input = String::new();
 		io::stdin().read_line(&mut input).expect("Error: read error");
-		if let Ok(m) = mv::parse(&input)
+		if let Ok(m) = mvg::parse(&input)
 		{
-			if  !mv::is_yours(&m, board, turn)
+			if  !mvg::is_yours(&m, board, turn)
 			{
 				println!("{}", format!("{}", "You don't have any piece in here.".bright_red()));
 				continue;
 			}
-			if  !mv::try_proceed(&m, board)
+			if  !mvg::try_proceed(&m, board)
 			{
 				println!("{}", format!("{}", "It's not reasonable.".bright_red()));
 				continue;
