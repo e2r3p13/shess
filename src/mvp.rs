@@ -6,7 +6,7 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/28 08:46:17 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/02/28 12:48:49 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/02/29 11:30:38 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,22 @@ fn piece_between(m: &mvg::Move, b: &[[char; 8]; 8]) -> bool
 			}
 		}
 	}
+	if m.from[0] - m.to[0].abs() == (m.from[1] - m.to[1]).abs()
+	{
+		let up = if m.from[0] < m.to[0] { 1 } else { -1 };
+		let lt = if m.from[1] < m.to[1] { 1 } else { -1 };
+		let mut j = 0;
+		while m.from[0] + (j * up) != m.to[0]
+		{
+			let i1 = m.from[0] + (j * up);
+			let i2 = m.from[1] + (j * lt);
+			if b[i1 as usize][i2 as usize] != '.' && j != 0
+			{
+				return true;
+			}
+			j += 1;
+		}
+	}
 	return false;
 }
 
@@ -79,12 +95,24 @@ pub fn move_black_rock(m: &mvg::Move, b: &mut [[char; 8]; 8]) -> bool
 
 pub fn move_black_knight(m: &mvg::Move, b: &mut [[char; 8]; 8]) -> bool
 {
-	true
+	if ((m.from[0] - m.to[0]).abs() == 2 && (m.from[1] - m.to[1]).abs() == 1) || ((m.from[0] - m.to[0]).abs() == 1 && (m.from[1] - m.to[1]).abs() == 2) && !b[m.to[0] as usize][m.to[1] as usize].is_uppercase()
+	{
+		b[m.from[0] as usize][m.from[1] as usize] = '.';
+		b[m.to[0] as usize][m.to[1] as usize] = 'H';
+		return true;
+	}
+	return false;
 }
 
 pub fn move_black_bishop(m: &mvg::Move, b: &mut [[char; 8]; 8]) -> bool
 {
-	true
+	if (m.from[0] - m.to[0]).abs() == (m.from[1] - m.to[1]).abs() && !piece_between(m, b) && !b[m.to[0] as usize][m.to[1] as usize].is_uppercase()
+	{
+		b[m.from[0] as usize][m.from[1] as usize] = '.';
+		b[m.to[0] as usize][m.to[1] as usize] = 'B';
+		return true;
+	}
+	return false;
 }
 
 pub fn move_black_queen(m: &mvg::Move, b: &mut [[char; 8]; 8]) -> bool

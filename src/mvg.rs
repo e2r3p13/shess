@@ -6,13 +6,14 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 22:37:02 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/02/28 09:50:49 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/02/29 11:13:38 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 use std::io;
 use crate::mvp;
 
+#[derive(Debug)]
 pub struct Move
 {
 	pub from: [i8; 2],
