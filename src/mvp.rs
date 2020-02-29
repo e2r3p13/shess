@@ -6,7 +6,7 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/28 08:46:17 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/02/29 11:30:38 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/02/29 18:27:57 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ fn piece_between(m: &mvg::Move, b: &[[char; 8]; 8]) -> bool
 			}
 		}
 	}
-	if m.from[0] - m.to[0].abs() == (m.from[1] - m.to[1]).abs()
+	if (m.from[0] - m.to[0]).abs() == (m.from[1] - m.to[1]).abs()
 	{
 		let up = if m.from[0] < m.to[0] { 1 } else { -1 };
 		let lt = if m.from[1] < m.to[1] { 1 } else { -1 };
