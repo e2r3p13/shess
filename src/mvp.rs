@@ -6,7 +6,7 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/28 08:46:17 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/02/29 18:27:57 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/02/29 18:38:53 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,22 @@ use crate::mvg;
 pub enum Piece
 {
 	Pawn, Rock, Knight, Bishop, Queen, King
+}
+
+fn is_rock_move(m: &mvg::Move) -> bool
+{
+	m.from[0] == m.to[0] || m.from[1] == m.to[1]
+}
+
+fn is_bishop_move(m: &mvg::Move) -> move
+{
+	(m.from[0] - m.to[0]).abs() == (m.from[1] - m.to[1]).abs()
+}
+
+fn is_knight_move(m: &mvg::Move) -> bool
+{
+	((m.from[0] - m.to[0]).abs() == 2 && (m.from[1] - m.to[1]).abs() == 1) ||
+	((m.from[0] - m.to[0]).abs() == 1 && (m.from[1] - m.to[1]).abs() == 2)
 }
 
 fn piece_between(m: &mvg::Move, b: &[[char; 8]; 8]) -> bool
