@@ -6,18 +6,23 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 22:37:02 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/02/29 11:13:38 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/03/01 21:32:30 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 use std::io;
 use crate::mvp;
 
-#[derive(Debug)]
 pub struct Move
 {
-	pub from: [i8; 2],
-	pub to: [i8; 2],
+	pub from: Box,
+	pub to: Box,
+}
+
+pub struct Box
+{
+	pub x: i8,
+	pub y: i8,
 }
 
 pub fn parse(input: &str) -> Result<Move, io::Error>
@@ -47,39 +52,33 @@ pub fn parse(input: &str) -> Result<Move, io::Error>
 
 pub fn try_proceed(m: &Move, board: &mut [[char; 8]; 8]) -> bool
 {
-	let piece: mvp::Piece;
-	return match board[m.from[0] as usize][m.from[1] as usize]
+	let color = board[m.from.y as usize][m.from.x as usize]is_uppercase();
+	return match board[m.from.y as usize][m.from.x as usize]
 	{
-		'P' => mvp::move_black_pawn(m, board),
-		'R' => mvp::move_black_rock(m, board),
-		'H' => mvp::move_black_knight(m, board),
-		'B' => mvp::move_black_bishop(m, board),
-		'Q' => mvp::move_black_queen(m, board),
-		'K' => mvp::move_black_king(m, board),
-		'p' => mvp::move_white_pawn(m, board),
-		'r' => mvp::move_white_rock(m, board),
-		'h' => mvp::move_white_knight(m, board),
-		'b' => mvp::move_white_bishop(m, board),
-		'q' => mvp::move_white_queen(m, board),
-		'k' => mvp::move_white_king(m, board),
+		'P' => mvp::move_black_pawn(m, board, color),
+		'R' => mvp::move_black_rock(m, board, color),
+		'H' => mvp::move_black_knight(m, board, color),
+		'B' => mvp::move_black_bishop(m, board, color),
+		'Q' => mvp::move_black_queen(m, board, color),
+		'K' => mvp::move_black_king(m, board, color),
 		_ => panic!("Impossible statement")
 	};
 }
 
 pub fn is_yours(m: &Move, board: &[[char; 8]; 8], turn: u8) -> bool
 {
-	if turn == 0 && board[m.from[0] as usize][m.from[1] as usize].is_lowercase()
+	if turn == 0 && board[m.from.y as usize][m.from.x as usize].is_lowercase()
 	{
 		return true;
 	}
-	if turn == 1 && board[m.from[0] as usize][m.from[1] as usize].is_uppercase()
+	if turn == 1 && board[m.from.y as usize][m.from.x as usize].is_uppercase()
 	{
 		return true;
 	}
 	return false;
 }
 
-fn input_to_pos(it: &str) -> Result<[i8; 2], io::Error>
+fn input_to_pos(it: &str) -> Result<Box, io::Error>
 {
 	let mut pos = [0, 0];
 
@@ -112,5 +111,5 @@ fn input_to_pos(it: &str) -> Result<[i8; 2], io::Error>
 		'8' => 7,
 		_ => { return  Err(io::Error::new(io::ErrorKind::Other, "oh no!")); }
 	};
-	Ok(pos)
+	Ok(Box {x: pos[1], y: pos[0]})
 }
