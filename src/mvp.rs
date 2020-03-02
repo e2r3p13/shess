@@ -6,7 +6,7 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/28 08:46:17 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/03/02 16:23:49 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/03/02 16:43:29 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,7 @@ pub fn move_pawn(color: board::Color, m: &mvg::Move, b: &mut board::Board) -> bo
 	return false;
 }
 
-pub fn move_rock(color: board::Color, m: &mvg::Move, b: &mut board::Board) -> bool
+pub fn move_rock(m: &mvg::Move, b: &mut board::Board) -> bool
 {
 	if is_rock_move(m) && !collides(m, b)
 	{
@@ -110,7 +110,7 @@ pub fn move_rock(color: board::Color, m: &mvg::Move, b: &mut board::Board) -> bo
 	return false;
 }
 
-pub fn move_knight(color: board::Color, m: &mvg::Move, b: &mut board::Board) -> bool
+pub fn move_knight(m: &mvg::Move) -> bool
 {
 	if is_knight_move(m)
 	{
@@ -119,7 +119,7 @@ pub fn move_knight(color: board::Color, m: &mvg::Move, b: &mut board::Board) -> 
 	return false;
 }
 
-pub fn move_bishop(color: board::Color, m: &mvg::Move, b: &mut board::Board) -> bool
+pub fn move_bishop(m: &mvg::Move, b: &mut board::Board) -> bool
 {
 	if is_bishop_move(m) && !collides(m, b)
 	{
@@ -128,7 +128,7 @@ pub fn move_bishop(color: board::Color, m: &mvg::Move, b: &mut board::Board) -> 
 	return false;
 }
 
-pub fn move_queen(color: board::Color, m: &mvg::Move, b: &mut board::Board) -> bool
+pub fn move_queen(m: &mvg::Move, b: &mut board::Board) -> bool
 {
 	if is_queen_move(m) && !collides(m, b)
 	{
@@ -137,7 +137,7 @@ pub fn move_queen(color: board::Color, m: &mvg::Move, b: &mut board::Board) -> b
 	return false;
 }
 
-pub fn move_king(color: board::Color, m: &mvg::Move, b: &mut board::Board) -> bool
+pub fn move_king(m: &mvg::Move) -> bool
 {
 	if is_king_move(m)
 	{

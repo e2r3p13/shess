@@ -6,11 +6,12 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 22:37:02 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/03/02 16:23:01 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/03/02 16:43:47 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 use std::io;
+use colored::*;
 use crate::mvp;
 use crate::board;
 
@@ -58,18 +59,24 @@ pub fn try_proceed(m: &Move, board: &mut board::Board) -> bool
 
 	if src_color == dst_color
 	{
+		println!("{}", format!("{}", "Suicide is unauthaurized.".bright_red()));
 		return false;
 	}
-	return match board.at(m.from.x, m.from.y)
+	let success = match board.at(m.from.x, m.from.y)
 	{
 		'P' | 'p' => mvp::move_pawn(src_color, m, board),
-		'R' | 'r' => mvp::move_rock(src_color, m, board),
-		'H' | 'h' => mvp::move_knight(src_color, m, board),
-		'B' | 'b' => mvp::move_bishop(src_color, m, board),
-		'Q' | 'q' => mvp::move_queen(src_color, m, board),
-		'K' | 'k' => mvp::move_king(src_color, m, board),
+		'R' | 'r' => mvp::move_rock(m, board),
+		'H' | 'h' => mvp::move_knight(m),
+		'B' | 'b' => mvp::move_bishop(m, board),
+		'Q' | 'q' => mvp::move_queen(m, board),
+		'K' | 'k' => mvp::move_king(m),
 		_ => panic!("Impossible statement")
 	};
+	if !success
+	{
+		println!("{}", format!("{}", "You can't do that.".bright_red()));
+	}
+	return success;
 }
 
 pub fn is_yours(m: &Move, board: &board::Board, turn: u8) -> bool

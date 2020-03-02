@@ -6,7 +6,7 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/26 17:50:17 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/03/02 16:33:24 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/03/02 16:37:41 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,6 @@ fn play(turn: u8, board: &mut board::Board)
 			}
 			if  !mvg::try_proceed(&m, board)
 			{
-				println!("{}", format!("{}", "It's not reasonable.".bright_red()));
 				continue;
 			}
 			board.perform_move(m);
