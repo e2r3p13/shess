@@ -6,7 +6,7 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 19:52:59 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/03/02 16:34:38 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/03/02 20:18:46 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,13 @@ use crate::mvg;
 pub struct Board
 {
 	pub raw: [[char; 8]; 8],
+}
+
+#[derive(Copy, Clone)]
+pub struct Box
+{
+	pub x: i8,
+	pub y: i8,
 }
 
 #[derive(PartialEq, Eq)]
@@ -94,6 +101,21 @@ impl Board
 		println!("");
 	}
 
+	pub fn get_pos(&self, piece: char) -> Box
+	{
+		for i in 0..8
+		{
+			for j in 0..8
+			{
+				if self.at(i, j) == piece
+				{
+					return Box { x: i, y: j };
+				}
+			}
+		}
+		return Box { x: 0, y: 0 };
+	}
+
 	pub fn at(&self, x: i8, y: i8) -> char
 	{
 		self.raw[y as usize][x as usize]
@@ -116,10 +138,18 @@ impl Board
 		}
 	}
 
-	pub fn perform_move(&mut self, m: mvg::Move)
+	pub fn perform_move(&mut self, m: mvg::Move) -> char
 	{
+		let last_ate = self.raw[m.to.y as usize][m.to.x as usize];
 		self.raw[m.to.y as usize][m.to.x as usize] = self.raw[m.from.y as usize][m.from.x as usize];
 		self.raw[m.from.y as usize][m.from.x as usize] = '.';
+		return last_ate;
+	}
+
+	pub fn cancel_move(&mut self, m: mvg::Move, last_ate: char)
+	{
+		self.raw[m.from.y as usize][m.from.x as usize] = self.raw[m.to.y as usize][m.to.x as usize];
+		self.raw[m.from.y as usize][m.from.x as usize] = last_ate;
 	}
 }
 

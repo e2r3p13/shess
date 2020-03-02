@@ -6,7 +6,7 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 22:37:02 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/03/02 16:45:48 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/03/02 20:25:02 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,16 +15,11 @@ use colored::*;
 use crate::mvp;
 use crate::board;
 
+#[derive(Copy, Clone)]
 pub struct Move
 {
-	pub from: Box,
-	pub to: Box,
-}
-
-pub struct Box
-{
-	pub x: i8,
-	pub y: i8,
+	pub from: board::Box,
+	pub to: board::Box,
 }
 
 pub fn parse(input: &str) -> Result<Move, io::Error>
@@ -92,7 +87,7 @@ pub fn is_yours(m: &Move, board: &board::Board, turn: u8) -> bool
 	return false;
 }
 
-fn input_to_pos(it: &str) -> Result<Box, io::Error>
+fn input_to_pos(it: &str) -> Result<board::Box, io::Error>
 {
 	let mut pos = [0, 0];
 
@@ -105,16 +100,16 @@ fn input_to_pos(it: &str) -> Result<Box, io::Error>
 	{
 		pos[i] = match it.next().unwrap()
 		{
-			'a' => 0,
-			'b' => 1,
-			'c' => 2,
-			'd' => 3,
-			'e' => 4,
-			'f' => 5,
-			'g' => 6,
-			'h' => 7,
+			'a' | '1' => 0,
+			'b' | '2' => 1,
+			'c' | '3' => 2,
+			'd' | '4' => 3,
+			'e' | '5' => 4,
+			'f' | '6' => 5,
+			'g' | '7' => 6,
+			'h' | '8' => 7,
 			_ => { return  Err(io::Error::new(io::ErrorKind::Other, "oh no!")); }
 		};
 	}
-	Ok(Box {x: pos[1], y: pos[0]})
+	Ok(board::Box {x: pos[1], y: pos[0]})
 }
