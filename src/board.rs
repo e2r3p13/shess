@@ -6,7 +6,7 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 19:52:59 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/03/02 20:18:46 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/03/02 21:28:54 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,7 +149,7 @@ impl Board
 	pub fn cancel_move(&mut self, m: mvg::Move, last_ate: char)
 	{
 		self.raw[m.from.y as usize][m.from.x as usize] = self.raw[m.to.y as usize][m.to.x as usize];
-		self.raw[m.from.y as usize][m.from.x as usize] = last_ate;
+		self.raw[m.to.y as usize][m.to.x as usize] = last_ate;
 	}
 }
 
