@@ -6,7 +6,7 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 22:37:02 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/03/02 16:43:47 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/03/02 16:45:48 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,29 +101,20 @@ fn input_to_pos(it: &str) -> Result<Box, io::Error>
 		return Err(io::Error::new(io::ErrorKind::Other, "oh no!"));
 	}
 	let mut it = it.chars();
-	pos[0] = match it.next().unwrap()
+	for i in 0..2
 	{
-		'a' => 0,
-		'b' => 1,
-		'c' => 2,
-		'd' => 3,
-		'e' => 4,
-		'f' => 5,
-		'g' => 6,
-		'h' => 7,
-		_ => { return  Err(io::Error::new(io::ErrorKind::Other, "oh no!")); }
-	};
-	pos[1] = match it.next().unwrap()
-	{
-		'1' => 0,
-		'2' => 1,
-		'3' => 2,
-		'4' => 3,
-		'5' => 4,
-		'6' => 5,
-		'7' => 6,
-		'8' => 7,
-		_ => { return  Err(io::Error::new(io::ErrorKind::Other, "oh no!")); }
-	};
+		pos[i] = match it.next().unwrap()
+		{
+			'a' => 0,
+			'b' => 1,
+			'c' => 2,
+			'd' => 3,
+			'e' => 4,
+			'f' => 5,
+			'g' => 6,
+			'h' => 7,
+			_ => { return  Err(io::Error::new(io::ErrorKind::Other, "oh no!")); }
+		};
+	}
 	Ok(Box {x: pos[1], y: pos[0]})
 }
