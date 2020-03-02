@@ -6,12 +6,13 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 22:37:02 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/03/01 21:32:30 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/03/02 16:23:01 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 use std::io;
 use crate::mvp;
+use crate::board;
 
 pub struct Move
 {
@@ -50,28 +51,34 @@ pub fn parse(input: &str) -> Result<Move, io::Error>
 	};
 }
 
-pub fn try_proceed(m: &Move, board: &mut [[char; 8]; 8]) -> bool
+pub fn try_proceed(m: &Move, board: &mut board::Board) -> bool
 {
-	let color = board[m.from.y as usize][m.from.x as usize]is_uppercase();
-	return match board[m.from.y as usize][m.from.x as usize]
+	let src_color = board.color_at(m.from.x, m.from.y);
+	let dst_color = board.color_at(m.to.x, m.to.y);
+
+	if src_color == dst_color
 	{
-		'P' => mvp::move_black_pawn(m, board, color),
-		'R' => mvp::move_black_rock(m, board, color),
-		'H' => mvp::move_black_knight(m, board, color),
-		'B' => mvp::move_black_bishop(m, board, color),
-		'Q' => mvp::move_black_queen(m, board, color),
-		'K' => mvp::move_black_king(m, board, color),
+		return false;
+	}
+	return match board.at(m.from.x, m.from.y)
+	{
+		'P' | 'p' => mvp::move_pawn(src_color, m, board),
+		'R' | 'r' => mvp::move_rock(src_color, m, board),
+		'H' | 'h' => mvp::move_knight(src_color, m, board),
+		'B' | 'b' => mvp::move_bishop(src_color, m, board),
+		'Q' | 'q' => mvp::move_queen(src_color, m, board),
+		'K' | 'k' => mvp::move_king(src_color, m, board),
 		_ => panic!("Impossible statement")
 	};
 }
 
-pub fn is_yours(m: &Move, board: &[[char; 8]; 8], turn: u8) -> bool
+pub fn is_yours(m: &Move, board: &board::Board, turn: u8) -> bool
 {
-	if turn == 0 && board[m.from.y as usize][m.from.x as usize].is_lowercase()
+	if turn == 0 && board.color_at(m.from.x, m.from.y) == board::Color::White
 	{
 		return true;
 	}
-	if turn == 1 && board[m.from.y as usize][m.from.x as usize].is_uppercase()
+	if turn == 1 && board.color_at(m.from.x, m.from.y) == board::Color::Black
 	{
 		return true;
 	}

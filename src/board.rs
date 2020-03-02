@@ -6,74 +6,123 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 19:52:59 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/02/28 08:33:00 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/03/02 16:34:38 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 use colored::*;
+use crate::mvg;
 
-pub fn set() -> [[char; 8]; 8]
+pub struct Board
 {
-	[
-		['R', 'H', 'B', 'Q', 'K', 'B', 'H', 'R'],
-		['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
-		['.', '.', '.', '.', '.', '.', '.', '.'],
-		['.', '.', '.', '.', '.', '.', '.', '.'],
-		['.', '.', '.', '.', '.', '.', '.', '.'],
-		['.', '.', '.', '.', '.', '.', '.', '.'],
-		['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
-		['r', 'h', 'b', 'q', 'k', 'b', 'h', 'r']
-	]
+	pub raw: [[char; 8]; 8],
 }
 
-pub fn print(board: [[char; 8]; 8])
+#[derive(PartialEq, Eq)]
+#[derive(Copy, Clone)]
+pub enum Color
 {
+	Black, White, None
+}
 
-	let mut c: char;
-	let mut is_black: bool;
+impl Board
+{
+	pub fn set(&mut self)
+	{
+		self.raw = [
+			['R', 'H', 'B', 'Q', 'K', 'B', 'H', 'R'],
+			['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
+			['.', '.', '.', '.', '.', '.', '.', '.'],
+			['.', '.', '.', '.', '.', '.', '.', '.'],
+			['.', '.', '.', '.', '.', '.', '.', '.'],
+			['.', '.', '.', '.', '.', '.', '.', '.'],
+			['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
+			['r', 'h', 'b', 'q', 'k', 'b', 'h', 'r']
+		]
+	}
 
-	println!("");
-	for row in 0..9 {
-		for column in 0..9 {
-			if row == 0 && column == 0
+	pub fn print(&self)
+	{
+
+		let mut c: char;
+		let mut is_black: bool;
+
+		println!("");
+		for row in 0..9
+		{
+			for column in 0..9
 			{
-				print!(" # "); continue
-			}
-			if row == 0
-			{
-				print!(" {} ", column); continue
-			}
-			if column == 0
-			{
-				print!(" {} ", to_row_letter(row)); continue
-			}
-			is_black = board[row - 1][column - 1].is_uppercase();
-			c = p_from_c(board[row - 1][column - 1]);
-			if (row + column) % 2 == 0
-			{
-				if is_black
+				if row == 0 && column == 0
 				{
-					print!("{}", format!(" {} ", c).black().on_bright_yellow());
+					print!("   "); continue
+				}
+				if row == 0
+				{
+					print!(" {} ", column); continue
+				}
+				if column == 0
+				{
+					print!(" {} ", to_row_letter(row)); continue
+				}
+				is_black = self.raw[row - 1][column - 1].is_uppercase();
+				c = p_from_c(self.raw[row - 1][column - 1]);
+				if (row + column) % 2 == 0
+				{
+					if is_black
+					{
+						print!("{}", format!(" {} ", c).black().on_bright_yellow());
+					}
+					else
+					{
+						print!("{}", format!(" {} ", c).bright_blue().on_bright_yellow().bold());
+					}
 				}
 				else
 				{
-					print!("{}", format!(" {} ", c).bright_blue().on_bright_yellow().bold());
-				}
-			} else {
-				if is_black
-				{
-					print!("{}", format!(" {} ", c).black().on_bright_blue());
-				}
-				else
-				{
-					print!("{}", format!(" {} ", c).bright_yellow().on_bright_blue().bold());
+					if is_black
+					{
+						print!("{}", format!(" {} ", c).black().on_bright_blue());
+					}
+					else
+					{
+						print!("{}", format!(" {} ", c).bright_yellow().on_bright_blue().bold());
+					}
 				}
 			}
+			println!("");
 		}
 		println!("");
 	}
-	println!("");
+
+	pub fn at(&self, x: i8, y: i8) -> char
+	{
+		self.raw[y as usize][x as usize]
+	}
+
+	pub fn color_at(&self, x: i8, y: i8) -> Color
+	{
+		let piece = self.at(x, y);
+		if piece == '.'
+		{
+			return Color::None;
+		}
+		else if piece.is_uppercase()
+		{
+			return Color::Black;
+		}
+		else
+		{
+			return Color::White;
+		}
+	}
+
+	pub fn perform_move(&mut self, m: mvg::Move)
+	{
+		self.raw[m.to.y as usize][m.to.x as usize] = self.raw[m.from.y as usize][m.from.x as usize];
+		self.raw[m.from.y as usize][m.from.x as usize] = '.';
+	}
 }
+
 
 fn to_row_letter(id: usize) -> char
 {

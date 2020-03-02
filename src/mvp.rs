@@ -6,31 +6,37 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/28 08:46:17 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/03/01 21:33:20 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/03/02 16:23:49 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 use crate::mvg;
+use crate::board;
 
-fn is_pawn_move(m: &mvg::Move) -> bool
+fn is_pawn_move(m: &mvg::Move, color: board::Color) -> bool
 {
-	let is_black = b[m.from.y][m.from.x].is_uppercase();
-	if is_black && (m.from.y - m.to.y == -1 || m.from.y - m.to.y == -2) && m.from.y == m.from.x && b[m.to.y as usize][m.to.x as usize] == '.'
+	if color == board::Color::Black && (m.from.y - m.to.y == -1 || (m.from.y - m.to.y == -2 && m.from.y == 1)) && m.from.x == m.to.x
 	{
 		return true;
 	}
-	if !is_black && (m.from.y - m.to.y == 1 || m.from.y - m.to.y == 2) && m.from.y == m.from.x && b[m.to.y as usize][m.to.x as usize] == '.'
+	if color == board::Color::White && (m.from.y - m.to.y == 1 || (m.from.y - m.to.y == 2 && m.from.y == 6)) && m.from.x == m.to.x
 	{
 		return true;
 	}
 	return false;
 }
 
-fn can_pawn_eat(m: &mvg::Move) -> bool
+fn can_pawn_eat(m: &mvg::Move, color: board::Color) -> bool
 {
-	let self_color = b[m.from.y][m.from.x].is_uppercase();
-	let target_color = b[m.to.y][m.to.x].is_uppercase();
-	if self_color
+	if color == board::Color::Black && m.to.y - m.from.y == 1 && (m.to.x - m.from.x).abs() == 1
+	{
+		return true;
+	}
+	else if color == board::Color::White && m.from.y - m.to.y == 1 && (m.to.x - m.from.x).abs() == 1
+	{
+		return true;
+	}
+	return false;
 }
 
 fn is_rock_move(m: &mvg::Move) -> bool
@@ -51,38 +57,31 @@ fn is_knight_move(m: &mvg::Move) -> bool
 
 fn is_queen_move(m: &mvg::Move) -> bool
 {
-
+	is_bishop_move(m) || is_rock_move(m)
 }
 
 fn is_king_move(m: &mvg::Move) -> bool
 {
-
+	(m.from.x - m.to.x).abs() <= 1 && (m.from.y - m.to.y).abs() <= 1
 }
 
-fn end_conflict(m: &mvg::Move, b: &[[char; 8]; 8]) -> bool
-{
-	let color_fr = b[m.from.y][m.from.x].is_uppercase();
-	let color_to = b[m.to.y][m.to.x].is_uppercase();
-	return (color_fr == color_to);
-}
-
-fn collides(m: &mvg::Move, b: &[[char; 8]; 8]) -> bool
+fn collides(m: &mvg::Move, b: &board::Board) -> bool
 {
 	let vv = {
-		if (m.from.y - m.to.y > 0) { -1 }
-		else if (m.from.y - m.to.y < 0) { 1 }
+		if m.from.y - m.to.y > 0 { -1 }
+		else if m.from.y - m.to.y < 0 { 1 }
 		else { 0 }
 	};
 	let vh = {
-		if (m.from.x - m.to.x > 0) { -1 }
-		else if (m.from.x - m.to.x < 0) { 1 }
+		if m.from.x - m.to.x > 0 { -1 }
+		else if m.from.x - m.to.x < 0 { 1 }
 		else { 0 }
 	};
 	let mut fy = m.from.y + vv;
 	let mut fx = m.from.x + vh;
-	while m.to != [fy, fx]
+	while m.to.x != fx || m.to.y != fy
 	{
-		if b[fy][fx] != '.'
+		if b.color_at(fx, fy) != board::Color::None
 		{
 			return true;
 		}
@@ -92,62 +91,57 @@ fn collides(m: &mvg::Move, b: &[[char; 8]; 8]) -> bool
 	return false;
 }
 
-pub fn move_pawn(m: &mvg::Move, b: &mut [[char; 8]; 8]) -> bool
+pub fn move_pawn(color: board::Color, m: &mvg::Move, b: &mut board::Board) -> bool
 {
-	if b[m.to.y][m.to.x] == '.' && m.to.x == m.from.x && (m.to.y - m.from.y == 1 || (m.to.y - m.from.y == 2 && m.from.y == 1 )) // Move straight forward by 1
+	if (is_pawn_move(m, color) && !collides(m, b) && b.color_at(m.to.x, m.to.y) == board::Color::None) ||
+	(can_pawn_eat(m, color) && b.color_at(m.to.x, m.to.y) != board::Color::None)
 	{
-		b[m.from.y][m.from.x] = '.';
-		b[m.to.y][m.to.x] = 'P';
-		return true;
-	}
-	if b[m.to.y][m.to.x].is_lowercase() && m.to.y - m.from.y == 1 && (m.to.x - m.from.x == 1 || m.to.x - m.from.x == -1) // Eat
-	{
-		b[m.from.y][m.from.x] = '.';
-		b[m.to.y][m.to.x] = 'P';
-		return true;
-	}
-	false
-}
-
-pub fn move_rock(m: &mvg::Move, b: &mut [[char; 8]; 8]) -> bool
-{
-	if is_rock_move(m) && !collides(m, b) && !end_conflict(m, b)
-	{
-		b[m.from.y][m.from.x] = '.';
-		b[m.to.y][m.to.x] = 'R';
 		return true;
 	}
 	return false;
 }
 
-pub fn move_knight(m: &mvg::Move, b: &mut [[char; 8]; 8]) -> bool
+pub fn move_rock(color: board::Color, m: &mvg::Move, b: &mut board::Board) -> bool
 {
-	if is_knight_move(m) && !end_conflict(m, b)
+	if is_rock_move(m) && !collides(m, b)
 	{
-		b[m.from.y][m.from.x] = '.';
-		b[m.to.y][m.to.x] = 'H';
 		return true;
 	}
 	return false;
 }
 
-pub fn move_bishop(m: &mvg::Move, b: &mut [[char; 8]; 8]) -> bool
+pub fn move_knight(color: board::Color, m: &mvg::Move, b: &mut board::Board) -> bool
 {
-	if is_bishop_move(m) && !collides(m, b) && !end_conflict(m, b)
+	if is_knight_move(m)
 	{
-		b[m.from.y][m.from.x] = '.';
-		b[m.to.y][m.to.x] = 'B';
 		return true;
 	}
 	return false;
 }
 
-pub fn move_queen(m: &mvg::Move, b: &mut [[char; 8]; 8]) -> bool
+pub fn move_bishop(color: board::Color, m: &mvg::Move, b: &mut board::Board) -> bool
 {
-	true
+	if is_bishop_move(m) && !collides(m, b)
+	{
+		return true;
+	}
+	return false;
 }
 
-pub fn move_king(m: &mvg::Move, b: &mut [[char; 8]; 8]) -> bool
+pub fn move_queen(color: board::Color, m: &mvg::Move, b: &mut board::Board) -> bool
 {
-	true
+	if is_queen_move(m) && !collides(m, b)
+	{
+		return true;
+	}
+	return false;
+}
+
+pub fn move_king(color: board::Color, m: &mvg::Move, b: &mut board::Board) -> bool
+{
+	if is_king_move(m)
+	{
+		return true;
+	}
+	return false;
 }
