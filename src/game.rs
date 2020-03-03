@@ -6,7 +6,7 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/26 17:50:17 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/03/03 11:17:11 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/03/03 11:42:47 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -198,10 +198,14 @@ fn chess_mate(b: &mut board::Board, turn: u8) -> board::Color
 								{
 									b.cancel_move(m, last_ate);
 								}
-								else
+								else if !b.at(m.to.x, m.to.y).is_uppercase()
 								{
 									b.cancel_move(m, last_ate);
 									return board::Color::None;
+								}
+								else
+								{
+									b.cancel_move(m, last_ate);
 								}
 							}
 						}
@@ -243,10 +247,14 @@ fn chess_mate(b: &mut board::Board, turn: u8) -> board::Color
 								{
 									b.cancel_move(m, last_ate);
 								}
-								else
+								else if !b.at(m.to.x, m.to.y).is_lowercase()
 								{
 									b.cancel_move(m, last_ate);
 									return board::Color::None;
+								}
+								else
+								{
+									b.cancel_move(m, last_ate);
 								}
 							}
 						}
