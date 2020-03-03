@@ -6,7 +6,7 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/26 17:50:17 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/03/03 11:42:47 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/03/03 19:27:30 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,13 +20,13 @@ use std::io::{Write};
 const STARTING_BOARD: [[char; 8]; 8] =
 [
 	['R', 'H', 'B', 'Q', 'K', 'B', 'H', 'R'],
-	['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
+	['P', 'P', 'P', 'P', '.', 'P', 'P', 'P'],
 	['.', '.', '.', '.', '.', '.', '.', '.'],
 	['.', '.', '.', '.', '.', '.', '.', '.'],
 	['.', '.', '.', '.', '.', '.', '.', '.'],
 	['.', '.', '.', '.', '.', '.', '.', '.'],
-	['p', 'p', 'p', 'p', 'k', 'p', 'p', 'p'],
-	['r', 'h', 'b', 'q', 'p', 'b', 'h', 'r']
+	['p', 'p', 'p', 'p', 'r', 'p', 'p', 'p'],
+	['r', 'h', 'b', 'q', 'k', 'b', 'h', 'r']
 ];
 
 pub fn start()
@@ -35,7 +35,7 @@ pub fn start()
 	let mut turn = 0;
 	let mut loser = board::Color::None;
 
-	board.set();
+	//board.set();
 	while loser == board::Color::None
 	{
 		board.print();
@@ -140,12 +140,12 @@ fn chess_for(player: board::Color, b: &mut board::Board) -> bool
 					let m = mvg::Move {from: board::Box {x: x, y: y}, to: board::Box {x: king_pos.x, y: king_pos.y}};
 					chess = match c
 					{
-						'P' => mvp::move_pawn(board::Color::Black, &m, b),
-						'R' => mvp::move_rock(&m, b),
-						'H' => mvp::move_knight(&m),
-						'B' => mvp::move_bishop(&m, b),
-						'Q' => mvp::move_queen(&m, b),
-						'K' => mvp::move_king(&m),
+						'p' => mvp::move_pawn(board::Color::White, &m, b),
+						'r' => mvp::move_rock(&m, b),
+						'h' => mvp::move_knight(&m),
+						'b' => mvp::move_bishop(&m, b),
+						'q' => mvp::move_queen(&m, b),
+						'k' => mvp::move_king(&m),
 						_ => false
 					};
 					if chess { return true; }
