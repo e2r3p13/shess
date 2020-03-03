@@ -6,7 +6,7 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 22:37:02 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/03/02 20:25:02 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/03/03 19:02:31 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,16 +100,16 @@ fn input_to_pos(it: &str) -> Result<board::Box, io::Error>
 	{
 		pos[i] = match it.next().unwrap()
 		{
-			'a' | '1' => 0,
-			'b' | '2' => 1,
-			'c' | '3' => 2,
-			'd' | '4' => 3,
-			'e' | '5' => 4,
-			'f' | '6' => 5,
-			'g' | '7' => 6,
-			'h' | '8' => 7,
+			'a' | '8' => 0,
+			'b' | '7' => 1,
+			'c' | '6' => 2,
+			'd' | '5' => 3,
+			'e' | '4' => 4,
+			'f' | '3' => 5,
+			'g' | '2' => 6,
+			'h' | '1' => 7,
 			_ => { return  Err(io::Error::new(io::ErrorKind::Other, "oh no!")); }
 		};
 	}
-	Ok(board::Box {x: pos[1], y: pos[0]})
+	Ok(board::Box {x: pos[0], y: pos[1]})
 }
