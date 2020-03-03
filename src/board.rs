@@ -6,7 +6,7 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 19:52:59 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/03/02 21:28:54 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/03/03 11:57:16 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,20 +59,20 @@ impl Board
 		{
 			for column in 0..9
 			{
-				if row == 0 && column == 0
+				if row == 8 && column == 0
 				{
 					print!("   "); continue
 				}
-				if row == 0
+				if row == 8
 				{
-					print!(" {} ", column); continue
+					print!(" {} ", to_row_letter(column)); continue
 				}
 				if column == 0
 				{
-					print!(" {} ", to_row_letter(row)); continue
+					print!(" {} ", ((8 - row) as i32).abs()); continue
 				}
-				is_black = self.raw[row - 1][column - 1].is_uppercase();
-				c = p_from_c(self.raw[row - 1][column - 1]);
+				is_black = self.raw[row][column - 1].is_uppercase();
+				c = p_from_c(self.raw[row][column - 1]);
 				if (row + column) % 2 == 0
 				{
 					if is_black
