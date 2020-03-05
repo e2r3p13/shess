@@ -6,7 +6,7 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 22:37:02 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/03/05 03:18:43 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/03/05 03:41:30 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ pub fn is_legal_move_for(player: Player, mv: Move, board: &Board) -> bool {
 	return false;
 }
 
-fn get_legal_moves_for(player: Player, board: &Board) -> Vec<Move> {
+pub fn get_legal_moves_for(player: Player, board: &Board) -> Vec<Move> {
 	let mut owned_boxes: Vec<Box> = Vec::new();
 	let mut legal_moves: Vec<Move> = Vec::new();
 	//Get position of all player's pieces
@@ -47,10 +47,4 @@ fn get_legal_moves_for(player: Player, board: &Board) -> Vec<Move> {
 	//Remove moves that leads to self check
 
 	return legal_moves;
-}
-
-pub fn is_owned_by(player: Player, bx: Box, board: &Board) -> bool
-{
-	//Tells us if a bow is owned by a player
-	return board.color_at(bx.x, bx.y) == player;
 }

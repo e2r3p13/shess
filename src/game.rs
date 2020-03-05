@@ -6,13 +6,13 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/26 17:50:17 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/03/05 03:23:27 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/03/05 03:49:50 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 use colored::*;
 use crate::board::{Board, Box, DEFAULT_BOARD, Player};
-use crate::move_general::{Move, is_legal_move_for};
+use crate::move_general::{Move, is_legal_move_for, get_legal_moves_for};
 use std::io;
 use std::io::{Write};
 
@@ -21,10 +21,18 @@ pub fn start() {
 		raw: DEFAULT_BOARD, black_king_has_moved: false, white_king_has_moved: false
 	};
 	let mut turn = 0;
-	let mut loser = Player::None;
-	while loser == Player::None {
+	let loser;
+	loop {
 		board.print();
 		let player = current_player_turn(turn);
+		if get_legal_moves_for(player, &board).is_empty() {
+			if check_for(player, &board) {
+				loser = player;
+			} else {
+				loser = Player::None;
+			}
+			break;
+		}
 		play(player, &mut board);
 		turn += 1;
 	}
@@ -114,4 +122,16 @@ fn parse_box(input: &str) -> Result<Box, io::Error> {
 		return Ok(Box {x: pos[0], y: pos[1]});
 	}
 	return Err(io::Error::new(io::ErrorKind::InvalidInput, "A box only contains two characters"));
+}
+
+fn check_for(player: Player, board: &Board) -> bool {
+	let opponent = if player == Player::Black { Player::White } else { Player::Black };
+	let opponent_moves = get_legal_moves_for(opponent, board);
+	let king_position = board.get_king_pos_for(player);
+	for mv in opponent_moves {
+		if mv.to == king_position {
+			return true;
+		}
+	}
+	return false;
 }

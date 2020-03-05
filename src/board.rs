@@ -6,7 +6,7 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 19:52:59 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/03/05 03:22:07 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/03/05 03:50:06 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,11 +86,16 @@ impl Board {
 		println!("");
 	}
 
-	pub fn get_pos(&self, piece: char) -> Box {
+	pub fn get_king_pos_for(&self, player: Player) -> Box {
+		let king = match player {
+			Player::White => 'k',
+			Player::Black => 'K',
+			_ => ' ',
+		};
 		for i in 0..8 {
 			for j in 0..8 {
-				if self.at(i, j) == piece {
-					return Box { x: i, y: j };
+				if self.at(i, j) == king {
+					return Box {x: i, y: j};
 				}
 			}
 		}
