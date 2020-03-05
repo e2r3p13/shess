@@ -6,17 +6,23 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/26 17:50:17 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/03/06 00:04:31 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/03/06 00:55:20 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 use colored::*;
 use crate::board::{Board, Box, DEFAULT_BOARD, Player};
 use crate::move_general::{Move, is_legal_move_for, get_legal_moves_for, check_for};
-use std::io;
+use crate::ai1;
+use std::{io, process};
 use std::io::{Write};
 
-pub fn start() {
+#[derive(PartialEq, Eq)]
+pub enum Mode {
+	SinglePlayer, TwoPlayers,
+}
+
+pub fn start(mode: Mode) {
 	//Board init
 	let mut board = Board {
 		raw: DEFAULT_BOARD, black_king_has_moved: false, white_king_has_moved: false
@@ -36,14 +42,18 @@ pub fn start() {
 			break;
 		}
 		//If he can play, let's ask him for!
-		play(player, &mut board);
+		if mode == Mode::SinglePlayer && player == Player::Black {
+			ai1::play(player, &mut board);
+		} else {
+			play(player, &mut board);
+		}
 		turn += 1;
 	}
 	//Print which player has won
 	match loser {
-		Player::Black => println!("{}", format!("{}", "White player won!!".bright_green())),
-		Player::White => println!("{}", format!("{}", "Black player won!!".bright_green())),
-		Player::None => println!("{}", format!("{}", "Draw game by PAT".bright_green())),
+		Player::Black => println!("{}", format!("{}", "White player won!!\n".bright_green())),
+		Player::White => println!("{}", format!("{}", "Black player won!!\n".bright_green())),
+		Player::None => println!("{}", format!("{}", "Draw game by PAT\n".bright_green())),
 	}
 }
 
@@ -56,6 +66,7 @@ fn play(player: Player, board: &mut Board)
 		match &input[..] {
 			"print" => { board.print(); continue },
 			"eaten" => { board.print_eaten(); continue },
+			"exit" | "quit" => { process::exit(0); },
 			_ => (),
 		}
 		//If it's not a special command, try to parse a move
@@ -91,12 +102,7 @@ fn get_input_for(player: Player) -> String {
 		print!("{}", format!("{}", "Black's turn, what do you want to do ? ".bright_yellow()));
 	}
 	//Read from command line
-	let mut input = String::new();
-	io::stdout().flush().unwrap();
-	io::stdin().read_line(&mut input).expect("Error: read error");
-	//Remove trailing newline character
-	input.pop();
-	return input;
+	return read();
 }
 
 fn parse_move(input: &str) -> Result<Move, io::Error> {
@@ -134,4 +140,13 @@ fn parse_box(input: &str) -> Result<Box, io::Error> {
 		return Ok(Box {x: pos[0], y: pos[1]});
 	}
 	return Err(io::Error::new(io::ErrorKind::InvalidInput, "A box only contains two characters"));
+}
+
+pub fn read() -> String {
+	let mut input = String::new();
+	io::stdout().flush().unwrap();
+	io::stdin().read_line(&mut input).expect("Error: read error");
+	//Remove trailing newline character
+	input.pop();
+	return input;
 }
