@@ -1,47 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   mvg.rs                                             :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/02/27 22:37:02 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/03/05 02:14:03 by lfalkau          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-use std::io;
-use colored::*;
-use crate::mvp;
-use crate::board;
-
-#[derive(Copy, Clone)]
-#[derive(PartialEq, Eq)]
-pub struct Move
-{
-	pub from: board::Box,
-	pub to: board::Box,
-}
-
-pub fn is_legal_move(player: board::Color, mv: Move, board: &board::Board) -> bool {
-	let legal_moves = get_legal_moves_for(player, board);
-	for legal_move in legal_moves.iter() {
-		if mv == *legal_move {
-			return true;
-		}
-	}
-	return false;
-}
-
-fn get_legal_moves_for(player: board::Color, board: &board::Board) -> Vec<Move> {
-	
-}
-
-pub fn is_owned_by(player: board::Color, bx: board::Box, board: &board::Board) -> bool
-{
-	return board.color_at(bx.x, bx.y) == player;
-}
-
 fn chess_for(player: board::Color, b: &mut board::Board) -> bool
 {
 	let mut king_pos;
@@ -128,4 +84,48 @@ pub fn try_proceed(m: &Move, board: &mut board::Board) -> bool
 		println!("{}", format!("{}", "You can't do that.".bright_red()));
 	}
 	return success;
+}
+
+fn old_play(turn: u8, board: &mut board::Board)
+{
+	let player: board::Color = match turn {
+		0 => board::Color::White,
+		1 => board::Color::Black,
+		_ => board::Color::None
+	};
+	loop
+	{
+		let mut input = String::new();
+		if player == board::Color::White { print!("{}", format!("{}", "White's turn, what do you want to do ? ".bright_yellow())); }
+		if player == board::Color::Black { print!("{}", format!("{}", "Black's turn, what do you want to do ? ".bright_yellow())); }
+		io::stdout().flush().unwrap();
+		io::stdin().read_line(&mut input).expect("Error: read error");
+		input.pop();
+		if input == "print"
+		{
+			board.print();
+			continue;
+		}
+		if let Ok(m) = mvg::parse(&input)
+		{
+			if  !mvg::is_yours(&m, board, turn)
+			{
+				println!("{}", format!("{}", "You don't have any piece in here.".bright_red()));
+				continue;
+			}
+			if  !mvg::try_proceed(&m, board)
+			{
+				continue;
+			}
+			let last_ate = board.perform_move(m);
+			if chess_for(player, board)
+			{
+				board.cancel_move(m, last_ate);
+				println!("{}", format!("{}", "You have to protect your king.".bright_red()));
+				continue;
+			}
+			return;
+		}
+		println!("{}", format!("{}", "Format: XX to XX / XX from XX".bright_red()));
+	}
 }
