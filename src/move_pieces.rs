@@ -6,7 +6,7 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/28 08:46:17 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/03/05 14:52:41 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/03/05 19:35:07 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,9 @@ pub fn rock_legal_moves_for(player: Player, board: &Board, bx: Box) -> Vec<Move>
 	y = bx.y - 1;
 	while y >= 0 && board.color_at(x, y) != player {
 		legal_moves.push(Move {from: bx, to: Box {x, y}});
+		if board.color_at(x, y) != Player::None && board.color_at(x, y) != player {
+			break;
+		}
 		y -= 1;
 	}
 	//Down moves
@@ -66,6 +69,9 @@ pub fn rock_legal_moves_for(player: Player, board: &Board, bx: Box) -> Vec<Move>
 	y = bx.y + 1;
 	while y < 8 && board.color_at(x, y) != player {
 		legal_moves.push(Move {from: bx, to: Box {x, y}});
+		if board.color_at(x, y) != Player::None && board.color_at(x, y) != player {
+			break;
+		}
 		y += 1;
 	}
 	//Left moves
@@ -73,6 +79,9 @@ pub fn rock_legal_moves_for(player: Player, board: &Board, bx: Box) -> Vec<Move>
 	y = bx.y;
 	while x >= 0 && board.color_at(x, y) != player {
 		legal_moves.push(Move {from: bx, to: Box {x, y}});
+		if board.color_at(x, y) != Player::None && board.color_at(x, y) != player {
+			break;
+		}
 		x -= 1;
 	}
 	//Right moves
@@ -80,6 +89,9 @@ pub fn rock_legal_moves_for(player: Player, board: &Board, bx: Box) -> Vec<Move>
 	y = bx.y;
 	while x < 8 && board.color_at(x, y) != player {
 		legal_moves.push(Move {from: bx, to: Box {x, y}});
+		if board.color_at(x, y) != Player::None && board.color_at(x, y) != player {
+			break;
+		}
 		x += 1;
 	}
 	return legal_moves;
@@ -100,13 +112,15 @@ pub fn horse_legal_moves_for(player: Player, board: &Board, bx: Box) -> Vec<Move
 	//Test and add them for specific player
 	if player == Player::Black {
 		for b in boxes {
-			if !board.at(b.x, b.y).is_uppercase() {
+			if !board.at(b.x, b.y).is_uppercase() &&
+			b.x >= 0 && b.y >= 0 && b.x < 8 && b.y < 8 {
 				legal_moves.push(Move {from: bx, to: b})
 			}
 		}
 	} else {
 		for b in boxes {
-			if !board.at(b.x, b.y).is_lowercase() {
+			if !board.at(b.x, b.y).is_lowercase() &&
+			b.x >= 0 && b.y >= 0 && b.x < 8 && b.y < 8 {
 				legal_moves.push(Move {from: bx, to: b})
 			}
 		}
@@ -122,6 +136,9 @@ pub fn bishop_legal_moves_for(player: Player, board: &Board, bx: Box) -> Vec<Mov
 	y = bx.y - 1;
 	while y >= 0 && x >= 0 && board.color_at(x, y) != player {
 		legal_moves.push(Move {from: bx, to: Box {x, y}});
+		if board.color_at(x, y) != Player::None && board.color_at(x, y) != player {
+			break;
+		}
 		x -= 1;
 		y -= 1;
 	}
@@ -130,6 +147,9 @@ pub fn bishop_legal_moves_for(player: Player, board: &Board, bx: Box) -> Vec<Mov
 	y = bx.y - 1;
 	while y >= 0 && x < 8 && board.color_at(x, y) != player {
 		legal_moves.push(Move {from: bx, to: Box {x, y}});
+		if board.color_at(x, y) != Player::None && board.color_at(x, y) != player {
+			break;
+		}
 		x += 1;
 		y -= 1;
 	}
@@ -138,6 +158,9 @@ pub fn bishop_legal_moves_for(player: Player, board: &Board, bx: Box) -> Vec<Mov
 	y = bx.y + 1;
 	while y < 8 && x >= 0 && board.color_at(x, y) != player {
 		legal_moves.push(Move {from: bx, to: Box {x, y}});
+		if board.color_at(x, y) != Player::None && board.color_at(x, y) != player {
+			break;
+		}
 		x -= 1;
 		y += 1;
 	}
@@ -146,6 +169,9 @@ pub fn bishop_legal_moves_for(player: Player, board: &Board, bx: Box) -> Vec<Mov
 	y = bx.y + 1;
 	while y < 8 && x < 8 && board.color_at(x, y) != player {
 		legal_moves.push(Move {from: bx, to: Box {x, y}});
+		if board.color_at(x, y) != Player::None && board.color_at(x, y) != player {
+			break;
+		}
 		x += 1;
 		y += 1;
 	}
@@ -162,5 +188,31 @@ pub fn queen_legal_moves_for(player: Player, board: &Board, bx: Box) -> Vec<Move
 
 pub fn king_legal_moves_for(player: Player, board: &Board, bx: Box) -> Vec<Move> {
 	let mut legal_moves: Vec<Move> = Vec::new();
+	let mut boxes: Vec<Box> = Vec::new();
+	//Add 8 potential dst Box for king
+	boxes.push(Box{x: bx.x, y: bx.y + 1});
+	boxes.push(Box{x: bx.x, y: bx.y - 1});
+	boxes.push(Box{x: bx.x + 1, y: bx.y - 1});
+	boxes.push(Box{x: bx.x + 1, y: bx.y});
+	boxes.push(Box{x: bx.x + 1, y: bx.y + 1});
+	boxes.push(Box{x: bx.x - 1, y: bx.y - 1});
+	boxes.push(Box{x: bx.x - 1, y: bx.y});
+	boxes.push(Box{x: bx.x - 1, y: bx.y + 1});
+	//Test and add them for specific player
+	if player == Player::Black {
+		for b in boxes {
+			if !board.at(b.x, b.y).is_uppercase() &&
+			b.x >= 0 && b.y >= 0 && b.x < 8 && b.y < 8 {
+				legal_moves.push(Move {from: bx, to: b})
+			}
+		}
+	} else {
+		for b in boxes {
+			if !board.at(b.x, b.y).is_lowercase() &&
+			b.x >= 0 && b.y >= 0 && b.x < 8 && b.y < 8 {
+				legal_moves.push(Move {from: bx, to: b})
+			}
+		}
+	}
 	return legal_moves;
 }

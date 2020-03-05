@@ -6,7 +6,7 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 22:37:02 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/03/05 13:36:13 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/03/05 19:35:45 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,14 @@ use crate::move_pieces::{
 
 #[derive(Copy, Clone)]
 #[derive(PartialEq, Eq)]
+#[derive(Debug)]
 pub struct Move {
 	pub from: Box, pub to: Box,
 }
 
 pub fn is_legal_move_for(player: Player, mv: Move, board: &Board) -> bool {
 	//Make sure the wanted move is legal
-	let legal_moves = get_legal_moves_for(player, board);
+	let legal_moves = get_legal_moves_for(player, board, true);
 	for legal_move in legal_moves.iter() {
 		if mv == *legal_move {
 			return true;
@@ -37,7 +38,7 @@ pub fn is_legal_move_for(player: Player, mv: Move, board: &Board) -> bool {
 	return false;
 }
 
-pub fn get_legal_moves_for(player: Player, board: &Board) -> Vec<Move> {
+pub fn get_legal_moves_for(player: Player, board: &Board, check: bool) -> Vec<Move> {
 	let mut owned_boxes: Vec<Box> = Vec::new();
 	let mut legal_moves: Vec<Move> = Vec::new();
 	//Get position of all player's pieces
@@ -60,7 +61,31 @@ pub fn get_legal_moves_for(player: Player, board: &Board) -> Vec<Move> {
 			_ => continue,
 		}
 	}
-	//Remove moves that leads to self check
 
+	if check {
+		let mut check_id: Vec<usize> = Vec::new();
+		for i in 0..legal_moves.len() {
+			let mut cpy_board = board.clone();
+			cpy_board.perform_move(legal_moves[i]);
+			if check_for(player, &cpy_board) {
+				check_id.push(i);
+			}
+		}
+		while let Some(id) = check_id.pop() {
+			legal_moves.remove(id);
+		}
+	}
 	return legal_moves;
+}
+
+pub fn check_for(player: Player, board: &Board) -> bool {
+	let opponent = if player == Player::Black { Player::White } else { Player::Black };
+	let opponent_moves = get_legal_moves_for(opponent, board, false);
+	let king_position = board.get_king_pos_for(player);
+	for mv in opponent_moves {
+		if mv.to == king_position {
+			return true;
+		}
+	}
+	return false;
 }

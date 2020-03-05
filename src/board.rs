@@ -6,7 +6,7 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 19:52:59 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/03/05 13:36:54 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/03/05 19:37:28 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ pub const DEFAULT_BOARD: [[char; 8]; 8] = [
 	['r', 'h', 'b', 'q', 'k', 'b', 'h', 'r']
 ];
 
+#[derive(Copy, Clone)]
 pub struct Board {
 	pub raw: [[char; 8]; 8],
 	pub black_king_has_moved: bool,
@@ -32,6 +33,7 @@ pub struct Board {
 
 #[derive(Copy, Clone)]
 #[derive(PartialEq, Eq)]
+#[derive(Debug)]
 pub struct Box {
 	pub x: i8, pub y: i8,
 }
