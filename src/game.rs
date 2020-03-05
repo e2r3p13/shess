@@ -6,7 +6,7 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/26 17:50:17 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/03/05 03:49:50 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/03/05 13:06:28 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,9 +37,9 @@ pub fn start() {
 		turn += 1;
 	}
 	match loser {
-		Player::Black => print!("{}", format!("{}", "Whites won!!".bright_green())),
-		Player::White => print!("{}", format!("{}", "Blacks won!!".bright_green())),
-		Player::None => print!("{}", format!("{}", "Draw game..".bright_green())),
+		Player::Black => println!("{}", format!("{}", "Whites won!!".bright_green())),
+		Player::White => println!("{}", format!("{}", "Blacks won!!".bright_green())),
+		Player::None => println!("{}", format!("{}", "Draw game..".bright_green())),
 	}
 }
 

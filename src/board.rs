@@ -6,15 +6,14 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 19:52:59 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/03/05 03:50:06 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/03/05 13:36:54 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 use colored::*;
 use crate::move_general::{Move};
 
-pub const DEFAULT_BOARD: [[char; 8]; 8] =
-[
+pub const DEFAULT_BOARD: [[char; 8]; 8] = [
 	['R', 'H', 'B', 'Q', 'K', 'B', 'H', 'R'],
 	['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
 	['.', '.', '.', '.', '.', '.', '.', '.'],
@@ -25,8 +24,7 @@ pub const DEFAULT_BOARD: [[char; 8]; 8] =
 	['r', 'h', 'b', 'q', 'k', 'b', 'h', 'r']
 ];
 
-pub struct Board
-{
+pub struct Board {
 	pub raw: [[char; 8]; 8],
 	pub black_king_has_moved: bool,
 	pub white_king_has_moved: bool,
@@ -34,16 +32,13 @@ pub struct Board
 
 #[derive(Copy, Clone)]
 #[derive(PartialEq, Eq)]
-pub struct Box
-{
-	pub x: i8,
-	pub y: i8,
+pub struct Box {
+	pub x: i8, pub y: i8,
 }
 
 #[derive(PartialEq, Eq)]
 #[derive(Copy, Clone)]
-pub enum Player
-{
+pub enum Player {
 	Black, White, None
 }
 
@@ -103,7 +98,11 @@ impl Board {
 	}
 
 	pub fn at(&self, x: i8, y: i8) -> char {
-		self.raw[y as usize][x as usize]
+		if x >= 0 && y >= 0 && x <8 && y < 8 {
+			return self.raw[y as usize][x as usize];
+		} else {
+			return '#';
+		}
 	}
 
 	pub fn color_at(&self, x: i8, y: i8) -> Player {
