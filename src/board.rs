@@ -6,7 +6,7 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 19:52:59 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/03/05 19:37:28 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/03/05 22:42:37 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,6 @@ pub struct Board {
 
 #[derive(Copy, Clone)]
 #[derive(PartialEq, Eq)]
-#[derive(Debug)]
 pub struct Box {
 	pub x: i8, pub y: i8,
 }
@@ -66,15 +65,15 @@ impl Board {
 				c = p_from_c(self.raw[row][column - 1]);
 				if (row + column) % 2 == 0 {
 					if is_black {
-						print!("{}", format!(" {} ", c).black().on_bright_yellow());
+						print!("{}", format!(" {} ", c).black().on_bright_white());
 					} else {
-						print!("{}", format!(" {} ", c).bright_blue().on_bright_yellow().bold());
+						print!("{}", format!(" {} ", c).bright_black().on_bright_white());
 					}
 				} else {
 					if is_black {
-						print!("{}", format!(" {} ", c).black().on_bright_blue());
+						print!("{}", format!(" {} ", c).black().on_bright_black());
 					} else {
-						print!("{}", format!(" {} ", c).bright_yellow().on_bright_blue().bold());
+						print!("{}", format!(" {} ", c).white().on_bright_black());
 					}
 				}
 			}
@@ -127,26 +126,16 @@ impl Board {
 
 fn to_row_letter(id: usize) -> char {
 	match id {
-		1 => 'A',
-		2 => 'B',
-		3 => 'C',
-		4 => 'D',
-		5 => 'E',
-		6 => 'F',
-		7 => 'G',
-		8 => 'H',
-		_ => ' ',
+		1 => 'A', 2 => 'B', 3 => 'C',
+		4 => 'D', 5 => 'E', 6 => 'F',
+		7 => 'G', 8 => 'H', _ => ' ',
 	}
 }
 
 fn p_from_c(c: char) -> char {
 	match c.to_lowercase().next().unwrap() {
-		'p' => '♙',
-		'r' => '♖',
-		'h' => '♘',
-		'b' => '♗',
-		'q' => '♕',
-		'k' => '♔',
+		'p' => '♙', 'r' => '♖', 'h' => '♘',
+		'b' => '♗', 'q' => '♕', 'k' => '♔',
 		_ => ' '
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 22:37:02 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/03/05 19:35:45 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/03/05 21:20:05 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ use crate::move_pieces::{
 
 #[derive(Copy, Clone)]
 #[derive(PartialEq, Eq)]
-#[derive(Debug)]
 pub struct Move {
 	pub from: Box, pub to: Box,
 }
@@ -62,6 +61,8 @@ pub fn get_legal_moves_for(player: Player, board: &Board, check: bool) -> Vec<Mo
 		}
 	}
 
+	//Check bool indicates weither we have to avoid moves that leads us to check or not
+	//Add id of checks leading moves in a vector
 	if check {
 		let mut check_id: Vec<usize> = Vec::new();
 		for i in 0..legal_moves.len() {
@@ -71,6 +72,7 @@ pub fn get_legal_moves_for(player: Player, board: &Board, check: bool) -> Vec<Mo
 				check_id.push(i);
 			}
 		}
+		//Remove those elements from legal moves
 		while let Some(id) = check_id.pop() {
 			legal_moves.remove(id);
 		}
@@ -78,6 +80,7 @@ pub fn get_legal_moves_for(player: Player, board: &Board, check: bool) -> Vec<Mo
 	return legal_moves;
 }
 
+//Return true if a specific player is checked for a specific board
 pub fn check_for(player: Player, board: &Board) -> bool {
 	let opponent = if player == Player::Black { Player::White } else { Player::Black };
 	let opponent_moves = get_legal_moves_for(opponent, board, false);

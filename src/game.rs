@@ -6,7 +6,7 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/26 17:50:17 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/03/05 19:07:32 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/03/05 22:32:31 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,36 +17,43 @@ use std::io;
 use std::io::{Write};
 
 pub fn start() {
+	//Board init
 	let mut board = Board {
 		raw: DEFAULT_BOARD, black_king_has_moved: false, white_king_has_moved: false
 	};
+	//turn is incremented each time someone plays, loser is used for the end of the game
 	let mut turn = 0;
 	let loser;
+	//Here's the main loop, only ends when someone has won || PAT
 	loop {
+		//Print the chess board on standard output
 		board.print();
+		//Defines which player has to play
 		let player = current_player_turn(turn);
+		//Check if current player can't play, meaning he lost || PAT
 		if get_legal_moves_for(player, &board, true).is_empty() {
-			if check_for(player, &board) {
-				loser = player;
-			} else {
-				loser = Player::None;
-			}
+			loser = if check_for(player, &board) {player} else {Player::None};
 			break;
 		}
+		//If he can play, let's ask him for!
 		play(player, &mut board);
 		turn += 1;
 	}
+	//Print which player has won
 	match loser {
-		Player::Black => println!("{}", format!("{}", "Whites won!!".bright_green())),
-		Player::White => println!("{}", format!("{}", "Blacks won!!".bright_green())),
-		Player::None => println!("{}", format!("{}", "Draw game..".bright_green())),
+		Player::Black => println!("{}", format!("{}", "White player won!!".bright_green())),
+		Player::White => println!("{}", format!("{}", "Black player won!!".bright_green())),
+		Player::None => println!("{}", format!("{}", "Draw game by PAT".bright_green())),
 	}
 }
 
 fn play(player: Player, board: &mut Board)
 {
 	loop {
+		//Ask player what does he wants to do until he does
 		let input = get_input_for(player);
+		//Check for special commands
+		//If it's not a special command, try to parse a move
 		if let Ok(mv) = parse_move(&input) {
 			if is_legal_move_for(player, mv, board) {
 				board.perform_move(mv);
