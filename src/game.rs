@@ -6,81 +6,93 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/26 17:50:17 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/03/05 02:12:51 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/03/05 03:23:27 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 use colored::*;
-use crate::board;
-use crate::mvg;
+use crate::board::{Board, Box, DEFAULT_BOARD, Player};
+use crate::move_general::{Move, is_legal_move_for};
 use std::io;
 use std::io::{Write};
 
 pub fn start() {
-	let mut board = board::Board { raw: board::DEFAULT_BOARD };
+	let mut board = Board {
+		raw: DEFAULT_BOARD, black_king_has_moved: false, white_king_has_moved: false
+	};
 	let mut turn = 0;
-	let mut loser = board::Color::None;
-	while loser == board::Color::None {
+	let mut loser = Player::None;
+	while loser == Player::None {
 		board.print();
 		let player = current_player_turn(turn);
 		play(player, &mut board);
 		turn += 1;
 	}
 	match loser {
-		board::Color::Black => print!("{}", format!("{}", "Whites won!!".bright_green())),
-		board::Color::White => print!("{}", format!("{}", "Blacks won!!".bright_green())),
-		board::Color::None => print!("{}", format!("{}", "Draw game..".bright_green())),
+		Player::Black => print!("{}", format!("{}", "Whites won!!".bright_green())),
+		Player::White => print!("{}", format!("{}", "Blacks won!!".bright_green())),
+		Player::None => print!("{}", format!("{}", "Draw game..".bright_green())),
 	}
 }
 
-fn play(player: board::Color, board: &mut board::Board)
+fn play(player: Player, board: &mut Board)
 {
 	loop {
 		let input = get_input_for(player);
-		if let Ok(mv) = parse_move(player, &input) {
-			if mvg::is_legal_move_for(player, mv, board) {
+		if let Ok(mv) = parse_move(&input) {
+			if is_legal_move_for(player, mv, board) {
 				board.perform_move(mv);
 				return;
 			}
+			println!("{}", format!("{}", "Forbidden move".bright_red()));
+			continue;
 		}
 		println!("{}", format!("{}", "Format: 'e2 e4'".bright_red()));
 	}
 }
 
-fn current_player_turn(turn: u8) -> board::Color {
+fn current_player_turn(turn: u8) -> Player {
+	//As white player begins, each even turn has to be played by white player
+	//Same way, odd turn will be played by black player
 	match turn % 2 {
-		0 => board::Color::White,
-		1 => board::Color::Black,
-		_ => board::Color::None
+		0 => Player::White,
+		1 => Player::Black,
+		_ => Player::None
 	}
 }
 
-fn get_input_for(player: Board::Color) -> String {
-	let mut input = String::new();
-	if player == board::Color::White {
+fn get_input_for(player: Player) -> String {
+	//This funtion returns the player's input as taken in command line
+	//User friendly message
+	if player == Player::White {
 		print!("{}", format!("{}", "White's turn, what do you want to do ? ".bright_yellow()));
 	}
-	if player == board::Color::Black {
+	if player == Player::Black {
 		print!("{}", format!("{}", "Black's turn, what do you want to do ? ".bright_yellow()));
 	}
+	//Read from command line
+	let mut input = String::new();
 	io::stdout().flush().unwrap();
 	io::stdin().read_line(&mut input).expect("Error: read error");
+	//Remove trailing newline character
 	input.pop();
 	return input;
 }
 
-fn parse_move(player: board::Color, input: &str) -> Result<mvg::Move, io::Error> {
+fn parse_move(input: &str) -> Result<Move, io::Error> {
+	//Return a move from user input
+	//Can throw Error
 	let input = input.to_lowercase();
 	let fields: Vec<&str> = input.split_whitespace().collect();
 	if fields.len() == 2 {
-		let from = parse_box(fields[0])?;
-		let to = parse_box(fields[2])?;
-		return Ok(mvg::Move { from, to });
+		let f = parse_box(fields[0])?;
+		let t = parse_box(fields[1])?;
+		return Ok(Move { from: f, to: t });
 	}
-	return Err(io::Error::new(io::ErrorKind::Other, "oh no!"));
+	return Err(io::Error::new(io::ErrorKind::InvalidInput, "A move only contains two fields"));
 }
 
-fn parse_box(input: &str) -> Result<board::Box, io::Error> {
+fn parse_box(input: &str) -> Result<Box, io::Error> {
 	let mut pos = [0, 0];
 	if input.len() == 2 {
 		let mut input = input.chars();
@@ -95,11 +107,11 @@ fn parse_box(input: &str) -> Result<board::Box, io::Error> {
 				'g' | '2' => 6,
 				'h' | '1' => 7,
 				_ => {
-					return Err(io::Error::new(io::ErrorKind::Other, "oh no!"));
+					return Err(io::Error::new(io::ErrorKind::InvalidInput, "Unrecognized box"));
 				}
 			};
 		}
-		return Ok(board::Box {x: pos[0], y: pos[1]});
+		return Ok(Box {x: pos[0], y: pos[1]});
 	}
-	return Err(io::Error::new(io::ErrorKind::Other, "oh no!"));
+	return Err(io::Error::new(io::ErrorKind::InvalidInput, "A box only contains two characters"));
 }

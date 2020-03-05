@@ -6,14 +6,14 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/26 16:36:03 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/03/05 01:36:47 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/03/05 02:58:58 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 mod game;
 mod board;
-mod mvp;
-mod mvg;
+mod move_pieces;
+mod move_general;
 
 fn main() {
 	game::start();
