@@ -6,7 +6,7 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/26 17:50:17 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/03/05 22:32:31 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/03/06 00:04:31 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,11 @@ fn play(player: Player, board: &mut Board)
 		//Ask player what does he wants to do until he does
 		let input = get_input_for(player);
 		//Check for special commands
+		match &input[..] {
+			"print" => { board.print(); continue },
+			"eaten" => { board.print_eaten(); continue },
+			_ => (),
+		}
 		//If it's not a special command, try to parse a move
 		if let Ok(mv) = parse_move(&input) {
 			if is_legal_move_for(player, mv, board) {

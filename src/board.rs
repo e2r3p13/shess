@@ -6,7 +6,7 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 19:52:59 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/03/05 22:42:37 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/03/06 00:11:41 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,12 @@ impl Board {
 		println!("");
 	}
 
+	pub fn print_eaten(&self) {
+		print!("\n {}", format!("                        ").white().on_bright_black());
+		print!(" {}", format!("                        ").black().on_bright_white());
+		println!("\n");
+	}
+
 	pub fn get_king_pos_for(&self, player: Player) -> Box {
 		let king = match player {
 			Player::White => 'k',
@@ -122,7 +128,6 @@ impl Board {
 		self.raw[m.from.y as usize][m.from.x as usize] = '.';
 	}
 }
-
 
 fn to_row_letter(id: usize) -> char {
 	match id {
