@@ -6,7 +6,7 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 19:52:59 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/03/06 00:42:56 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/03/06 01:30:47 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,8 @@ impl Board {
 		let mut c: char;
 		let mut is_black: bool;
 
+		std::process::Command::new("clear").status().unwrap();
+		println!("\n       {}", format!("{}", "S  H  E  S  S  !".bright_magenta().bold()));
 		println!("");
 		for row in 0..9 {
 			for column in 0..9 {
