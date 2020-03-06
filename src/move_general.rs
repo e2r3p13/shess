@@ -6,7 +6,7 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 22:37:02 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/03/05 21:20:05 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/03/06 12:55:04 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ use crate::move_pieces::{
 
 #[derive(Copy, Clone)]
 #[derive(PartialEq, Eq)]
+#[derive(Debug)]
 pub struct Move {
 	pub from: Box, pub to: Box,
 }

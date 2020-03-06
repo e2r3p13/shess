@@ -6,7 +6,7 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 19:52:59 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/03/06 01:30:47 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/03/06 12:55:11 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ pub struct Board {
 
 #[derive(Copy, Clone)]
 #[derive(PartialEq, Eq)]
+#[derive(Debug)]
 pub struct Box {
 	pub x: i8, pub y: i8,
 }

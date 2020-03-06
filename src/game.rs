@@ -6,20 +6,27 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/26 17:50:17 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/03/06 00:55:20 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/03/06 12:45:13 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 use colored::*;
 use crate::board::{Board, Box, DEFAULT_BOARD, Player};
 use crate::move_general::{Move, is_legal_move_for, get_legal_moves_for, check_for};
-use crate::ai1;
+use crate::ai_random;
+use crate::ai_minmax;
 use std::{io, process};
 use std::io::{Write};
 
 #[derive(PartialEq, Eq)]
+#[derive(Copy, Clone)]
+#[derive(Debug)]
 pub enum Mode {
-	SinglePlayer, TwoPlayers,
+	PvP,
+	RandomAI,
+	MinMaxAI,
+	AlphaBetaAI,
+	DeepLearningAI,
 }
 
 pub fn start(mode: Mode) {
@@ -42,8 +49,12 @@ pub fn start(mode: Mode) {
 			break;
 		}
 		//If he can play, let's ask him for!
-		if mode == Mode::SinglePlayer && player == Player::Black {
-			ai1::play(player, &mut board);
+		if mode != Mode::PvP && player == Player::Black {
+			match mode {
+				Mode::RandomAI => ai_random::play(player, &mut board),
+				Mode::MinMaxAI => ai_minmax::play(player, &mut board),
+				_ => (),
+			}
 		} else {
 			play(player, &mut board);
 		}
