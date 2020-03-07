@@ -6,7 +6,7 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/26 17:50:17 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/03/06 12:45:13 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/03/07 01:15:52 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,6 @@ pub enum Mode {
 	PvP,
 	RandomAI,
 	MinMaxAI,
-	AlphaBetaAI,
-	DeepLearningAI,
 }
 
 pub fn start(mode: Mode) {
@@ -93,7 +91,7 @@ fn play(player: Player, board: &mut Board)
 	}
 }
 
-fn current_player_turn(turn: u8) -> Player {
+fn current_player_turn(turn: u64) -> Player {
 	//As white player begins, each even turn has to be played by white player
 	//Same way, odd turn will be played by black player
 	match turn % 2 {

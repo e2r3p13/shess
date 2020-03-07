@@ -6,7 +6,7 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 19:52:59 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/03/06 12:55:11 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/03/07 00:35:38 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,17 @@ pub const DEFAULT_BOARD: [[char; 8]; 8] = [
 	['r', 'h', 'b', 'q', 'k', 'b', 'h', 'r']
 ];
 
+// pub const DEFAULT_BOARD: [[char; 8]; 8] = [
+// 	['.', '.', '.', 'K', '.', '.', '.', '.'],
+// 	['.', '.', '.', 'B', '.', '.', '.', '.'],
+// 	['.', '.', '.', '.', '.', '.', '.', '.'],
+// 	['.', '.', '.', '.', '.', '.', '.', '.'],
+// 	['.', '.', '.', '.', '.', '.', '.', '.'],
+// 	['.', '.', '.', '.', '.', '.', '.', '.'],
+// 	['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
+// 	['.', '.', '.', 'k', '.', '.', '.', '.'],
+// ];
+
 #[derive(Copy, Clone)]
 pub struct Board {
 	pub raw: [[char; 8]; 8],
@@ -39,9 +50,22 @@ pub struct Box {
 }
 
 #[derive(PartialEq, Eq)]
+#[derive(Debug)]
 #[derive(Copy, Clone)]
 pub enum Player {
 	Black, White, None
+}
+
+impl Player {
+
+	pub fn opponent(&self) -> Player {
+		match self {
+			Player::Black => Player::White,
+			Player::White => Player::Black,
+			Player::None => Player::None,
+		}
+	}
+
 }
 
 impl Board {

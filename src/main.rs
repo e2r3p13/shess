@@ -6,7 +6,7 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/26 16:36:03 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/03/06 11:40:21 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/03/06 22:02:45 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ mod move_general;
 mod ai_random;
 mod ai_minmax;
 
-use crate::game::Mode::{PvP, RandomAI, MinMaxAI, AlphaBetaAI, DeepLearningAI};
+use crate::game::Mode::{PvP, RandomAI, MinMaxAI};
 use colored::*;
 
 fn main() {

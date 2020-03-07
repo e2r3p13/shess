@@ -6,7 +6,7 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 22:37:02 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/03/06 12:55:04 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/03/06 23:20:30 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ pub fn get_legal_moves_for(player: Player, board: &Board, check: bool) -> Vec<Mo
 
 //Return true if a specific player is checked for a specific board
 pub fn check_for(player: Player, board: &Board) -> bool {
-	let opponent = if player == Player::Black { Player::White } else { Player::Black };
+	let opponent = player.opponent();
 	let opponent_moves = get_legal_moves_for(opponent, board, false);
 	let king_position = board.get_king_pos_for(player);
 	for mv in opponent_moves {
