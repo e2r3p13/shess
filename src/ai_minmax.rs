@@ -6,14 +6,14 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/06 10:37:14 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/03/07 01:53:50 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/03/07 16:30:15 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 use crate::board::{Board, Player, Box};
 use crate::move_general::{Move, get_legal_moves_for};
 use rand::seq::SliceRandom;
-use rand::Rng;
+use rand::thread_rng;
 
 const DEPTH: u8 = 3;
 const EVAL_MAX: i32 = 100_000_000;
@@ -27,106 +27,67 @@ pub fn play(player: Player, board: &mut Board) {
 	board.perform_move(mv);
 }
 
-fn min(player: Player, board: &Board, depth: u8, best_move: &mut Move) -> i32 {
+fn min(player: Player, board: &Board, depth: u8, mv: &mut Move) -> i32 {
+	//End of recursion
 	if depth == 0 {
 		return eval(board, player.opponent());
 	}
-	let mut min = EVAL_MAX;
-	for mv in get_legal_moves_for(player, board, true) {
+	//Create vectors to choose randomly the best move
+	let am: Vec<Move> = get_legal_moves_for(player, board, true);
+	let mut s: Vec<i32> = Vec::new();
+	let mut bm: Vec<Move> = Vec::new();
+	//Start exploring move tree
+	for m in &am {
 		let mut board_cpy = board.clone();
-		board_cpy.perform_move(mv);
-		let score = max(player.opponent(), &board_cpy, depth - 1, best_move);
-		if score < min {
-			min = score;
-			*best_move = mv;
+		board_cpy.perform_move(*m);
+		s.push(min(player.opponent(), &board_cpy, depth - 1, mv));
+	}
+	//Find out max value
+	let min = get_min(&s);
+	//Add all equal moves
+	for i in 0..s.len() {
+		if s[i] == min {
+			bm.push(am[i]);
 		}
+	}
+	//Choose one randomly
+	let mut rng = thread_rng();
+	if let Some(m) = bm.choose(&mut rng) {
+		*mv = *m;
 	}
 	return min;
 }
 
-fn max(player: Player, board: &Board, depth: u8, best_move: &mut Move) -> i32 {
+fn max(player: Player, board: &Board, depth: u8, mv: &mut Move) -> i32 {
+	//End of recursion
 	if depth == 0 {
 		return eval(board, player.opponent());
 	}
-	let mut max = EVAL_MIN;
-	for mv in get_legal_moves_for(player, board, true) {
+	//Create vectors to choose randomly the best move
+	let am: Vec<Move> = get_legal_moves_for(player, board, true);
+	let mut s: Vec<i32> = Vec::new();
+	let mut bm: Vec<Move> = Vec::new();
+	//Start exploring move tree
+	for m in &am {
 		let mut board_cpy = board.clone();
-		board_cpy.perform_move(mv);
-		let score = min(player.opponent(), &board_cpy, depth - 1, best_move);
-		if score > max {
-			max = score;
-			*best_move = mv;
+		board_cpy.perform_move(*m);
+		s.push(min(player.opponent(), &board_cpy, depth - 1, mv));
+	}
+	//Find out max value
+	let max = get_max(&s);
+	//Add all equal moves
+	for i in 0..s.len() {
+		if s[i] == max {
+			bm.push(am[i]);
 		}
+	}
+	//Choose one randomly
+	let mut rng = thread_rng();
+	if let Some(m) = bm.choose(&mut rng) {
+		*mv = *m;
 	}
 	return max;
 }
-
-// fn mmin(player: Player, board: &Board, depth: u8, best_move: &mut Move) -> i32 {
-// 	let moves: Vec<Move> = get_legal_moves_for(player, board, true);
-// 	let mut best_moves: Vec<Move> = Vec::new();
-// 	let mut moves_score: Vec<i32> = Vec::new();
-// 	for mv in get_legal_moves_for(player, board, true) {
-// 		let mut board_cpy = board.clone();
-// 		board_cpy.perform_move(mv);
-// 		let mut score;
-// 		if depth == 0 {
-// 			score = eval(board, player);
-// 		} else {
-// 			score = mmin(player.opponent(), &board_cpy, depth - 1, best_move);
-// 		}
-// 		moves_score.push(score);
-// 	}
-// 	//println!("min {:?}", moves_score);
-// 	let min = get_min(&moves_score);
-// 	for i in 0..moves.len() {
-// 		if moves_score[i] == min {
-// 			best_moves.push(moves[i]);
-// 		}
-// 	}
-// 	let id = rand::thread_rng().gen_range(0, best_moves.len());
-// 	if best_moves.len() > 0 {
-// 		*best_move = best_moves[0];
-// 	}
-// 	let mut board_cc = board.clone();
-// 	board_cc.perform_move(*best_move);
-// 	//println!("d:{}   p:{:?}   s:{}", depth, player, min);
-// 	//board_cc.print();
-// 	return min;
-// }
-//
-// fn mmax(player: Player, board: &Board, depth: u8, best_move: &mut Move) -> i32 {
-// 	let moves: Vec<Move> = get_legal_moves_for(player, board, true);
-// 	let mut best_moves: Vec<Move> = Vec::new();
-// 	let mut moves_score: Vec<i32> = Vec::new();
-// 	for mv in get_legal_moves_for(player, board, true) {
-// 		let mut board_cpy = board.clone();
-// 		board_cpy.perform_move(mv);
-// 		let mut score;
-// 		if depth == 0 {
-// 			score = eval(board, player);
-// 		} else {
-// 			score = mmax(player.opponent(), &board_cpy, depth - 1, best_move);
-// 		}
-// 		moves_score.push(score);
-// 	}
-// 	//println!("max {:?}", moves_score);
-// 	let max = get_max(&moves_score);
-// 	for i in 0..moves.len() {
-// 		if moves_score[i] == max {
-// 			best_moves.push(moves[i]);
-// 		}
-// 	}
-// 	let mut id = rand::thread_rng();//.gen_range(0, best_moves.len());
-// 	best_moves.shuffle(&mut id);
-// 	if best_moves.len() > 0 {
-// 		*best_move = best_moves[0];
-// 	}
-// 	let mut board_cc = board.clone();
-// 	board_cc.perform_move(*best_move);
-// 	//println!("d:{}   p:{:?}   s:{}", depth, player, max);
-// 	//board_cc.print();
-// 	return max;
-// }
 
 fn eval(board: &Board, player: Player) -> i32 {
 	let mut score = 0;

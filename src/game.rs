@@ -6,7 +6,7 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/26 17:50:17 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/03/07 01:15:52 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/03/07 16:22:45 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ pub enum Mode {
 	PvP,
 	RandomAI,
 	MinMaxAI,
+	MinMaxAI_MinMaxAI,
 }
 
 pub fn start(mode: Mode) {
@@ -47,7 +48,9 @@ pub fn start(mode: Mode) {
 			break;
 		}
 		//If he can play, let's ask him for!
-		if mode != Mode::PvP && player == Player::Black {
+		if mode == Mode::MinMaxAI_MinMaxAI {
+			ai_minmax::play(player, &mut board);
+		} else if mode != Mode::PvP && player == Player::Black {
 			match mode {
 				Mode::RandomAI => ai_random::play(player, &mut board),
 				Mode::MinMaxAI => ai_minmax::play(player, &mut board),
