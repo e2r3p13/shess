@@ -6,7 +6,7 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 19:52:59 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/03/08 15:10:06 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/03/08 16:25:48 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,25 +15,14 @@ use crate::move_general::{Move};
 
 pub const DEFAULT_BOARD: [[char; 8]; 8] = [
 	['R', 'H', 'B', 'Q', 'K', 'B', 'H', 'R'],
-	['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
+	['P', 'P', 'P', 'P', 'P', 'P', 'p', 'P'],
 	['.', '.', '.', '.', '.', '.', '.', '.'],
 	['.', '.', '.', '.', '.', '.', '.', '.'],
 	['.', '.', '.', '.', '.', '.', '.', '.'],
 	['.', '.', '.', '.', '.', '.', '.', '.'],
-	['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
+	['p', 'p', 'p', 'p', 'p', 'p', 'P', 'p'],
 	['r', 'h', 'b', 'q', 'k', 'b', 'h', 'r']
 ];
-
-// pub const DEFAULT_BOARD: [[char; 8]; 8] = [
-// 	['.', '.', '.', 'K', '.', '.', '.', '.'],
-// 	['.', '.', '.', 'B', '.', '.', '.', '.'],
-// 	['.', '.', '.', '.', '.', '.', '.', '.'],
-// 	['.', '.', '.', '.', '.', '.', '.', '.'],
-// 	['.', '.', '.', '.', '.', '.', '.', '.'],
-// 	['.', '.', '.', '.', '.', '.', '.', '.'],
-// 	['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
-// 	['.', '.', '.', 'k', '.', '.', '.', '.'],
-// ];
 
 #[derive(Copy, Clone)]
 pub struct Board {
@@ -162,6 +151,7 @@ impl Board {
 	}
 
 	pub fn perform_move(&mut self, m: Move) {
+		//Check for eaten pieces
 		if self.color_at(m.to.x, m.to.y) == Player::Black {
 			self.black_eaten[self.nb_black_eaten] = self.at(m.to.x, m.to.y);
 			self.nb_black_eaten += 1;
@@ -170,8 +160,16 @@ impl Board {
 			self.white_eaten[self.nb_white_eaten] = self.at(m.to.x, m.to.y);
 			self.nb_white_eaten += 1;
 		}
+		//Perform move
 		self.raw[m.to.y as usize][m.to.x as usize] = self.raw[m.from.y as usize][m.from.x as usize];
 		self.raw[m.from.y as usize][m.from.x as usize] = '.';
+		//Check for upgrading pawn
+		if m.to.y == 0 &&  self.at(m.to.x, m.to.y) == 'p'{
+			self.raw[m.to.y as usize][m.to.x as usize] = 'q';
+		}
+		if m.to.y == 7 &&  self.at(m.to.x, m.to.y) == 'P'{
+			self.raw[m.to.y as usize][m.to.x as usize] = 'Q';
+		}
 	}
 
 	pub fn get_score_for(&self, p: Player) -> i8 {
