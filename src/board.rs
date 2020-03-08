@@ -6,7 +6,7 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 19:52:59 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/03/08 17:38:51 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/03/08 18:06:05 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,14 +170,14 @@ impl Board {
 		}
 	}
 
-	pub fn get_score_for(&self, p: Player) -> i8 {
+	pub fn get_score_for(&self, p: Player) -> i32 {
 		let mut score = 0;
 		//println!("{:?}", player);
 		for x in 0..8 {
 			for y in 0..8 {
 				let value = match self.at(x, y) {
-					'P' | 'p' => 1, 'R' | 'r' => 5, 'H' | 'h' => 3,
-					'B' | 'b' => 3, 'Q' | 'q' => 9, 'K' | 'k' => 20,
+					'P' | 'p' => 100, 'R' | 'r' => 500, 'H' | 'h' => 320,
+					'B' | 'b' => 330, 'Q' | 'q' => 900, 'K' | 'k' => 20_000,
 					_ => 0,
 				};
 				if p == self.color_at(x, y) {

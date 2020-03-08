@@ -6,7 +6,7 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/26 16:36:03 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/03/08 14:17:03 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/03/08 18:13:41 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ mod move_pieces;
 mod move_general;
 mod ai_random;
 mod ai_minmax;
+mod pieces_table;
 
 use crate::game::Mode::{PvP, RandomAI, MinMaxAI, MinMaxAIVS};
 use colored::*;

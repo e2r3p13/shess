@@ -6,10 +6,11 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/06 10:37:14 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/03/08 16:43:18 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/03/08 18:15:26 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+use crate::pieces_table;
 use crate::board::{Board, Player, Box};
 use crate::move_general::{Move, get_legal_moves_for};
 use rand::seq::SliceRandom;
@@ -22,13 +23,11 @@ const EVAL_MIN: i32 = -100_000_000;
 pub fn play(player: Player, board: &mut Board) {
 
 	let mut mv: Move = Move {from: Box{x: 0, y: 0}, to: Box{x: 0, y: 0}};
-	let score;
 	if DEPTH % 2 == 0 {
-		score = min(player, board, DEPTH, &mut mv);
+		min(player, board, DEPTH, &mut mv);
 	} else {
-		score = max(player, board, DEPTH, &mut mv);
+		max(player, board, DEPTH, &mut mv);
 	}
-	println!("score : {}\n{:?}", score, mv);
 	board.perform_move(mv);
 }
 
@@ -95,28 +94,49 @@ fn max(player: Player, board: &Board, depth: u8, mv: &mut Move) -> i32 {
 }
 
 fn eval(board: &Board, player: Player) -> i32 {
-	let mut score = 0;
-	//println!("{:?}", player);
+	let mut score = board.get_score_for(player);
 	for x in 0..8 {
 		for y in 0..8 {
-			let value = match board.at(x, y) {
-				'P' | 'p' => 1,
-				'R' | 'r' => 5,
-				'H' | 'h' => 3,
-				'B' | 'b' => 3,
-				'Q' | 'q' => 9,
-				'K' | 'k' => 20,
-				_ => 0,
-			};
-			if player == board.color_at(x, y) {
-				score += value;
-			} else if board.color_at(x, y) == player.opponent() {
-				score -= value;
+			match board.at(x, y) {
+				'P' | 'p' => {
+					if board.color_at(x, y) == player {
+						score += pieces_table::PAWN_TABLE[y as usize][x as usize];
+					} else if board.color_at(x, y) == player.opponent() {
+						score -= pieces_table::PAWN_TABLE[y as usize][x as usize];
+					}
+				},
+				'R' | 'r' => {
+					if board.color_at(x, y) == player {
+						score += pieces_table::ROOK_TABLE[y as usize][x as usize];
+					} else if board.color_at(x, y) == player.opponent() {
+						score -= pieces_table::ROOK_TABLE[y as usize][x as usize];
+					}
+				},
+				'H' | 'h' => {
+					if board.color_at(x, y) == player {
+						score += pieces_table::KNIGHT_TABLE[y as usize][x as usize];
+					} else if board.color_at(x, y) == player.opponent() {
+						score -= pieces_table::KNIGHT_TABLE[y as usize][x as usize];
+					}
+				},
+				'B' | 'b' => {
+					if board.color_at(x, y) == player {
+						score += pieces_table::BISHOP_TABLE[y as usize][x as usize];
+					} else if board.color_at(x, y) == player.opponent() {
+						score -= pieces_table::BISHOP_TABLE[y as usize][x as usize];
+					}
+				},
+				'Q' | 'q' => {
+					if board.color_at(x, y) == player {
+						score += pieces_table::QUEEN_TABLE[y as usize][x as usize];
+					} else if board.color_at(x, y) == player.opponent() {
+						score -= pieces_table::QUEEN_TABLE[y as usize][x as usize];
+					}
+				},
+				_ => (),
 			}
-			//print!("{}, ", score);
 		}
 	}
-	//println!("");
 	return score;
 }
 
