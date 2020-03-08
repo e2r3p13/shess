@@ -6,7 +6,7 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/26 17:50:17 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/03/07 16:22:45 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/03/08 14:41:06 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,13 +25,19 @@ pub enum Mode {
 	PvP,
 	RandomAI,
 	MinMaxAI,
-	MinMaxAI_MinMaxAI,
+	MinMaxAIVS,
 }
 
 pub fn start(mode: Mode) {
 	//Board init
 	let mut board = Board {
-		raw: DEFAULT_BOARD, black_king_has_moved: false, white_king_has_moved: false
+		raw: DEFAULT_BOARD,
+		black_cannot_rock: false,
+		white_cannot_rock: false,
+		black_eaten: [' '; 15],
+		nb_black_eaten: 0,
+		white_eaten: [' '; 15],
+		nb_white_eaten: 0,
 	};
 	//turn is incremented each time someone plays, loser is used for the end of the game
 	let mut turn = 0;
@@ -48,7 +54,7 @@ pub fn start(mode: Mode) {
 			break;
 		}
 		//If he can play, let's ask him for!
-		if mode == Mode::MinMaxAI_MinMaxAI {
+		if mode == Mode::MinMaxAIVS {
 			ai_minmax::play(player, &mut board);
 		} else if mode != Mode::PvP && player == Player::Black {
 			match mode {

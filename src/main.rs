@@ -6,7 +6,7 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/26 16:36:03 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/03/07 16:31:15 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/03/08 14:17:03 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ mod move_general;
 mod ai_random;
 mod ai_minmax;
 
-use crate::game::Mode::{PvP, RandomAI, MinMaxAI, MinMaxAI_MinMaxAI};
+use crate::game::Mode::{PvP, RandomAI, MinMaxAI, MinMaxAIVS};
 use colored::*;
 
 fn main() {
@@ -35,7 +35,7 @@ fn main() {
 		if input == "1" { game::start(PvP); }
 		if input == "2" { game::start(RandomAI); }
 		if input == "3" { game::start(MinMaxAI); }
-		if input == "4" { game::start(MinMaxAI_MinMaxAI); }
+		if input == "4" { game::start(MinMaxAIVS); }
 		if input == "quit" || input == "exit" { break; }
 	}
 }

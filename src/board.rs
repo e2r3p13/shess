@@ -6,7 +6,7 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 19:52:59 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/03/07 00:35:38 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/03/08 14:53:46 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,12 @@ pub const DEFAULT_BOARD: [[char; 8]; 8] = [
 #[derive(Copy, Clone)]
 pub struct Board {
 	pub raw: [[char; 8]; 8],
-	pub black_king_has_moved: bool,
-	pub white_king_has_moved: bool,
+	pub black_cannot_rock: bool,
+	pub white_cannot_rock: bool,
+	pub nb_black_eaten: usize,
+	pub black_eaten: [char; 15],
+	pub nb_white_eaten: usize,
+	pub white_eaten: [char; 15],
 }
 
 #[derive(Copy, Clone)]
@@ -94,13 +98,13 @@ impl Board {
 					if is_black {
 						print!("{}", format!(" {} ", c).black().on_bright_white());
 					} else {
-						print!("{}", format!(" {} ", c).bright_black().on_bright_white());
+						print!("{}", format!(" {} ", c).white().on_bright_white());
 					}
 				} else {
 					if is_black {
 						print!("{}", format!(" {} ", c).black().on_bright_black());
 					} else {
-						print!("{}", format!(" {} ", c).white().on_bright_black());
+						print!("{}", format!(" {} ", c).bright_white().on_bright_black());
 					}
 				}
 			}
@@ -110,8 +114,14 @@ impl Board {
 	}
 
 	pub fn print_eaten(&self) {
-		print!("\n {}", format!("                        ").white().on_bright_black());
-		print!(" {}", format!("                        ").black().on_bright_white());
+		print!("\n ");
+		for i in 0..15 {
+			print!("{}", format!(" {}", p_from_c(self.white_eaten[i])).white().on_bright_white());
+		}
+		print!(" ");
+		for i in 0..15 {
+			print!("{}", format!(" {}", p_from_c(self.black_eaten[i])).black().on_bright_black());
+		}
 		println!("\n");
 	}
 
@@ -151,6 +161,14 @@ impl Board {
 	}
 
 	pub fn perform_move(&mut self, m: Move) {
+		if self.color_at(m.to.x, m.to.y) == Player::Black {
+			self.black_eaten[self.nb_black_eaten] = self.at(m.to.x, m.to.y);
+			self.nb_black_eaten += 1;
+		}
+		if self.color_at(m.to.x, m.to.y) == Player::White {
+			self.white_eaten[self.nb_white_eaten] = self.at(m.to.x, m.to.y);
+			self.nb_white_eaten += 1;
+		}
 		self.raw[m.to.y as usize][m.to.x as usize] = self.raw[m.from.y as usize][m.from.x as usize];
 		self.raw[m.from.y as usize][m.from.x as usize] = '.';
 	}
