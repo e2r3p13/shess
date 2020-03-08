@@ -6,7 +6,7 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/26 17:50:17 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/03/08 14:41:06 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/03/08 17:37:40 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,6 @@ pub fn start(mode: Mode) {
 	//Board init
 	let mut board = Board {
 		raw: DEFAULT_BOARD,
-		black_cannot_rock: false,
-		white_cannot_rock: false,
 		black_eaten: [' '; 15],
 		nb_black_eaten: 0,
 		white_eaten: [' '; 15],
@@ -85,6 +83,7 @@ fn play(player: Player, board: &mut Board)
 			"print" => { board.print(); continue },
 			"eaten" => { board.print_eaten(); continue },
 			"exit" | "quit" => { process::exit(0); },
+			"help" => { println!("{}", format!("{}", "Commands: print, eaten, exit, quit or move (Format: 'e2 e4')".bright_purple())); continue },
 			_ => (),
 		}
 		//If it's not a special command, try to parse a move

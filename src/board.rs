@@ -6,7 +6,7 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 19:52:59 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/03/08 16:28:06 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/03/08 17:38:51 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,6 @@ pub const DEFAULT_BOARD: [[char; 8]; 8] = [
 #[derive(Copy, Clone)]
 pub struct Board {
 	pub raw: [[char; 8]; 8],
-	pub black_cannot_rock: bool,
-	pub white_cannot_rock: bool,
 	pub nb_black_eaten: usize,
 	pub black_eaten: [char; 15],
 	pub nb_white_eaten: usize,
@@ -83,7 +81,7 @@ impl Board {
 				}
 				is_black = self.raw[row][column - 1].is_uppercase();
 				c = p_from_c(self.raw[row][column - 1]);
-				if (row + column) % 2 == 0 {
+				if (row + column) % 2 == 1 {
 					if is_black {
 						print!("{}", format!(" {} ", c).black().on_bright_white());
 					} else {
