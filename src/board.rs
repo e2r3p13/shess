@@ -6,7 +6,7 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 19:52:59 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/03/08 14:53:46 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/03/08 15:10:06 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,10 +118,11 @@ impl Board {
 		for i in 0..15 {
 			print!("{}", format!(" {}", p_from_c(self.white_eaten[i])).white().on_bright_white());
 		}
-		print!(" ");
+		print!(" {:+}  ", self.get_score_for(Player::White));
 		for i in 0..15 {
 			print!("{}", format!(" {}", p_from_c(self.black_eaten[i])).black().on_bright_black());
 		}
+		print!(" {:+}  ", self.get_score_for(Player::Black));
 		println!("\n");
 	}
 
@@ -172,6 +173,29 @@ impl Board {
 		self.raw[m.to.y as usize][m.to.x as usize] = self.raw[m.from.y as usize][m.from.x as usize];
 		self.raw[m.from.y as usize][m.from.x as usize] = '.';
 	}
+
+	pub fn get_score_for(&self, p: Player) -> i8 {
+		let mut score = 0;
+		//println!("{:?}", player);
+		for x in 0..8 {
+			for y in 0..8 {
+				let value = match self.at(x, y) {
+					'P' | 'p' => 1, 'R' | 'r' => 5, 'H' | 'h' => 3,
+					'B' | 'b' => 3, 'Q' | 'q' => 9, 'K' | 'k' => 20,
+					_ => 0,
+				};
+				if p == self.color_at(x, y) {
+					score += value;
+				} else if self.color_at(x, y) == p.opponent() {
+					score -= value;
+				}
+				//print!("{}, ", score);
+			}
+		}
+		//println!("");
+		return score;
+	}
+
 }
 
 fn to_row_letter(id: usize) -> char {
