@@ -6,7 +6,7 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/06 10:37:14 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/03/08 01:41:17 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/03/08 16:43:18 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,12 @@ const EVAL_MIN: i32 = -100_000_000;
 pub fn play(player: Player, board: &mut Board) {
 
 	let mut mv: Move = Move {from: Box{x: 0, y: 0}, to: Box{x: 0, y: 0}};
-	let score = max(player, board, DEPTH, &mut mv);
+	let score;
+	if DEPTH % 2 == 0 {
+		score = min(player, board, DEPTH, &mut mv);
+	} else {
+		score = max(player, board, DEPTH, &mut mv);
+	}
 	println!("score : {}\n{:?}", score, mv);
 	board.perform_move(mv);
 }
