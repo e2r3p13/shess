@@ -6,7 +6,7 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 19:52:59 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/03/10 15:32:53 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/03/10 23:30:20 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ impl Board {
 					if is_black {
 						print!("{}", format!(" {} ", c).black().on_bright_black());
 					} else {
-						print!("{}", format!(" {} ", c).bright_white().on_bright_black());
+						print!("{}", format!(" {} ", c).white().on_bright_black());
 					}
 				}
 			}
