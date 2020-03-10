@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ai_minmax.rs                                       :+:      :+:    :+:   */
+/*   ai_negamax.rs                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/06 10:37:14 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/03/10 14:58:15 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/03/11 00:34:02 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,10 @@ pub fn play(player: Player, board: &mut Board) {
 	let mut mv: Move = Move {from: Box{x: 0, y: 0}, to: Box{x: 0, y: 0}};
 	negamax(player, board, DEPTH, &mut mv);
 	board.perform_move(mv);
+	if board.pawn_upgrade() {
+		let q = if player == Player::Black {'Q'} else {'q'};
+		board.set_at(mv.to.x, mv.to.y, q);
+	}
 }
 
 fn negamax(player: Player, board: &Board, depth: u8, mv: &mut Move) -> i32 {

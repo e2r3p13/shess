@@ -6,7 +6,7 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/26 17:50:17 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/03/10 17:14:32 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/03/11 00:31:08 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,6 +90,9 @@ fn play(player: Player, board: &mut Board) -> bool
 		if let Ok(mv) = parse_move(&input) {
 			if is_legal_move_for(player, mv, board) {
 				board.perform_move(mv);
+				if board.pawn_upgrade() {
+					board.set_at(mv.to.x, mv.to.y, ask_for_piece_for(player));
+				}
 				return true;
 			}
 			println!("{}", format!("{}", "Forbidden move".bright_red()));
@@ -166,4 +169,21 @@ pub fn read() -> String {
 	//Remove trailing newline character
 	input.pop();
 	return input;
+}
+
+fn ask_for_piece_for(player: Player) -> char {
+	print!("{}", format!("{}", "\nChoose a piece (Queen/Rook/Bishop/Knight) >> ".bright_purple()));
+	loop {
+		let input = read().to_lowercase();
+		return match &input[..] {
+			"q" | "queen" => if player == Player::Black {'Q'} else {'q'},
+			"r" | "rook" => if player == Player::Black {'R'} else {'r'},
+			"b" | "bishop" => if player == Player::Black {'B'} else {'b'},
+			"k" | "knight" => if player == Player::Black {'H'} else {'h'},
+			_ => {
+				print!("{}", format!("{}", "Please choose between those ones: Queen/Rook/Bishop/Knight >> ".bright_red()));
+				continue;
+			},
+		};
+	}
 }

@@ -6,7 +6,7 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 19:52:59 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/03/10 23:30:20 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/03/11 00:29:29 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,12 @@ use crate::move_general::{Move};
 
 pub const DEFAULT_BOARD: [[char; 8]; 8] = [
 	['R', 'H', 'B', 'Q', 'K', 'B', 'H', 'R'],
-	['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
+	['P', 'P', 'P', 'P', 'P', 'P', 'P', 'p'],
 	['.', '.', '.', '.', '.', '.', '.', '.'],
 	['.', '.', '.', '.', '.', '.', '.', '.'],
 	['.', '.', '.', '.', '.', '.', '.', '.'],
 	['.', '.', '.', '.', '.', '.', '.', '.'],
-	['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
+	['p', 'p', 'p', 'p', 'p', 'p', 'p', 'P'],
 	['r', 'h', 'b', 'q', 'k', 'b', 'h', 'r']
 ];
 
@@ -169,13 +169,6 @@ impl Board {
 		//Perform move
 		self.raw[m.to.y as usize][m.to.x as usize] = self.raw[m.from.y as usize][m.from.x as usize];
 		self.raw[m.from.y as usize][m.from.x as usize] = '.';
-		//Check for upgrading pawn
-		if m.to.y == 0 &&  self.at(m.to.x, m.to.y) == 'p'{
-			self.raw[m.to.y as usize][m.to.x as usize] = 'q';
-		}
-		if m.to.y == 7 &&  self.at(m.to.x, m.to.y) == 'P'{
-			self.raw[m.to.y as usize][m.to.x as usize] = 'Q';
-		}
 	}
 
 	pub fn get_score_for(&self, p: Player) -> i32 {
@@ -198,6 +191,19 @@ impl Board {
 		}
 		//println!("");
 		return score;
+	}
+
+	pub fn set_at(&mut self, x: i8, y: i8, piece: char) {
+		self.raw[y as usize][x as usize] = piece;
+	}
+
+	pub fn pawn_upgrade(&self) -> bool {
+		for i in 0..8 {
+			if self.at(i, 0) == 'p' || self.at(i, 7) == 'P' {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }
