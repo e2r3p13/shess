@@ -6,7 +6,7 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 19:52:59 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/03/08 18:06:05 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/03/10 15:28:54 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,19 +68,20 @@ impl Board {
 		std::process::Command::new("clear").status().unwrap();
 		println!("\n       {}", format!("{}", "S  H  E  S  S  !".bright_magenta().bold()));
 		println!("");
-		for row in 0..9 {
-			for column in 0..9 {
-				if row == 8 && column == 0 {
+		//self.print_eaten(Player::Black);
+		for row in 0..10 {
+			for column in 0..10 {
+				if (row == 9 && column == 0) || (row == 0 && column == 9) || (row == 0 && column == 0) || (row == 9 && column == 9) {
 					print!("   "); continue
 				}
-				if row == 8 {
+				if row == 0 || row == 9 {
 					print!(" {} ", to_row_letter(column)); continue
 				}
-				if column == 0 {
-					print!(" {} ", ((8 - row) as i32).abs()); continue
+				if column == 0 || column == 9 {
+					print!(" {} ", ((9 - row) as i32).abs()); continue
 				}
-				is_black = self.raw[row][column - 1].is_uppercase();
-				c = p_from_c(self.raw[row][column - 1]);
+				is_black = self.raw[row - 1][column - 1].is_uppercase();
+				c = p_from_c(self.raw[row - 1][column - 1]);
 				if (row + column) % 2 == 1 {
 					if is_black {
 						print!("{}", format!(" {} ", c).black().on_bright_white());
@@ -95,22 +96,31 @@ impl Board {
 					}
 				}
 			}
+			if row == 4 {
+				print!("  ");
+				self.print_eaten(Player::Black);
+			} else if row == 5 {
+				print!("  ");
+				self.print_eaten(Player::White)
+			}
 			println!("");
 		}
+		//self.print_eaten(Player::White);
 		println!("");
 	}
 
-	pub fn print_eaten(&self) {
-		print!("\n ");
-		for i in 0..15 {
-			print!("{}", format!(" {}", p_from_c(self.white_eaten[i])).white().on_bright_white());
+	pub fn print_eaten(&self, player: Player) {
+		if player == Player::Black {
+			for i in 0..15 {
+				print!("{}", format!("{} ", p_from_c(self.white_eaten[i])).white().on_bright_black());
+			}
+			print!(" {:+}  ", self.get_score_for(Player::Black));
+		} else {
+			for i in 0..15 {
+				print!("{}", format!("{} ", p_from_c(self.black_eaten[i])).black().on_bright_white());
+			}
+			print!(" {:+}  ", self.get_score_for(Player::White));
 		}
-		print!(" {:+}  ", self.get_score_for(Player::White));
-		for i in 0..15 {
-			print!("{}", format!(" {}", p_from_c(self.black_eaten[i])).black().on_bright_black());
-		}
-		print!(" {:+}  ", self.get_score_for(Player::Black));
-		println!("\n");
 	}
 
 	pub fn get_king_pos_for(&self, player: Player) -> Box {

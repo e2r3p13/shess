@@ -6,7 +6,7 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/26 17:50:17 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/03/10 15:02:58 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/03/10 15:09:45 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,6 @@ fn play(player: Player, board: &mut Board)
 		//Check for special commands
 		match &input[..] {
 			"print" => { board.print(); continue },
-			"eaten" => { board.print_eaten(); continue },
 			"exit" | "quit" => { process::exit(0); },
 			"help" => { println!("{}", format!("{}", "Commands: print, eaten, exit, quit or move (Format: 'e2 e4')".bright_purple())); continue },
 			_ => (),
