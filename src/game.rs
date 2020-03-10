@@ -6,7 +6,7 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/26 17:50:17 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/03/10 15:09:45 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/03/10 17:14:32 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ pub enum Mode {
 }
 
 pub fn start(mode: Mode) {
+	let mut stopped = false;
 	//Board init
 	let mut board = Board {
 		raw: DEFAULT_BOARD,
@@ -58,19 +59,21 @@ pub fn start(mode: Mode) {
 				_ => (),
 			}
 		} else {
-			play(player, &mut board);
+			stopped = !play(player, &mut board);
 		}
 		turn += 1;
+		if stopped { return; }
 	}
 	//Print which player has won
 	match loser {
-		Player::Black => println!("{}", format!("{}", "White player won!!\n".bright_green())),
-		Player::White => println!("{}", format!("{}", "Black player won!!\n".bright_green())),
-		Player::None => println!("{}", format!("{}", "Draw game by PAT\n".bright_green())),
+		Player::Black => println!("{}", format!("{}", "White player won!!\nType ENTER to continue".bright_green())),
+		Player::White => println!("{}", format!("{}", "Black player won!!\nType ENTER to continue".bright_green())),
+		Player::None => println!("{}", format!("{}", "Draw game by PAT\nType ENTER to continue".bright_green())),
 	}
+	read();
 }
 
-fn play(player: Player, board: &mut Board)
+fn play(player: Player, board: &mut Board) -> bool
 {
 	loop {
 		//Ask player what does he wants to do until he does
@@ -78,7 +81,8 @@ fn play(player: Player, board: &mut Board)
 		//Check for special commands
 		match &input[..] {
 			"print" => { board.print(); continue },
-			"exit" | "quit" => { process::exit(0); },
+			"exit" => { process::exit(0); },
+			"quit" => return false,
 			"help" => { println!("{}", format!("{}", "Commands: print, eaten, exit, quit or move (Format: 'e2 e4')".bright_purple())); continue },
 			_ => (),
 		}
@@ -86,7 +90,7 @@ fn play(player: Player, board: &mut Board)
 		if let Ok(mv) = parse_move(&input) {
 			if is_legal_move_for(player, mv, board) {
 				board.perform_move(mv);
-				return;
+				return true;
 			}
 			println!("{}", format!("{}", "Forbidden move".bright_red()));
 			continue;
