@@ -6,7 +6,7 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 19:52:59 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/03/10 15:28:54 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/03/10 15:32:53 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,6 @@ impl Board {
 		std::process::Command::new("clear").status().unwrap();
 		println!("\n       {}", format!("{}", "S  H  E  S  S  !".bright_magenta().bold()));
 		println!("");
-		//self.print_eaten(Player::Black);
 		for row in 0..10 {
 			for column in 0..10 {
 				if (row == 9 && column == 0) || (row == 0 && column == 9) || (row == 0 && column == 0) || (row == 9 && column == 9) {
@@ -105,7 +104,6 @@ impl Board {
 			}
 			println!("");
 		}
-		//self.print_eaten(Player::White);
 		println!("");
 	}
 
