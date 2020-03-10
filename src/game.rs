@@ -6,7 +6,7 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/26 17:50:17 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/03/08 17:37:40 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/03/10 15:02:58 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@ use colored::*;
 use crate::board::{Board, Box, DEFAULT_BOARD, Player};
 use crate::move_general::{Move, is_legal_move_for, get_legal_moves_for, check_for};
 use crate::ai_random;
-use crate::ai_minmax;
+use crate::ai_negamax;
 use std::{io, process};
 use std::io::{Write};
 
@@ -24,8 +24,7 @@ use std::io::{Write};
 pub enum Mode {
 	PvP,
 	RandomAI,
-	MinMaxAI,
-	MinMaxAIVS,
+	NegamaxAI,
 }
 
 pub fn start(mode: Mode) {
@@ -52,12 +51,10 @@ pub fn start(mode: Mode) {
 			break;
 		}
 		//If he can play, let's ask him for!
-		if mode == Mode::MinMaxAIVS {
-			ai_minmax::play(player, &mut board);
-		} else if mode != Mode::PvP && player == Player::Black {
+		if mode != Mode::PvP && player == Player::Black {
 			match mode {
 				Mode::RandomAI => ai_random::play(player, &mut board),
-				Mode::MinMaxAI => ai_minmax::play(player, &mut board),
+				Mode::NegamaxAI => ai_negamax::play(player, &mut board),
 				_ => (),
 			}
 		} else {
