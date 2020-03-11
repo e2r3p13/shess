@@ -6,7 +6,7 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/26 17:50:17 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/03/11 00:31:08 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/03/11 01:47:17 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ pub fn start(mode: Mode) {
 		nb_black_eaten: 0,
 		white_eaten: [' '; 15],
 		nb_white_eaten: 0,
+		moved_flags: 0,
 	};
 	//turn is incremented each time someone plays, loser is used for the end of the game
 	let mut turn = 0;
@@ -83,7 +84,23 @@ fn play(player: Player, board: &mut Board) -> bool
 			"print" => { board.print(); continue },
 			"exit" => { process::exit(0); },
 			"quit" => return false,
-			"help" => { println!("{}", format!("{}", "Commands: print, eaten, exit, quit or move (Format: 'e2 e4')".bright_purple())); continue },
+			"help" => { println!("{}", format!("{}", "Commands: print, exit, quit or move (Format: 'e2 e4' or '[b/s] castle')".bright_purple())); continue },
+			"big castle" | "b castle" | "bc" => {
+				if board.big_castle_for(player) {
+					return true;
+				} else {
+					println!("{}", format!("{}", "Forbidden move".bright_red()));
+					continue;
+				}
+			},
+			"small castle" | "s castle" | "sc" => {
+				if board.small_castle_for(player) {
+					return true;
+				} else {
+					println!("{}", format!("{}", "Forbidden move".bright_red()));
+					continue;
+				}
+			},
 			_ => (),
 		}
 		//If it's not a special command, try to parse a move
@@ -172,7 +189,7 @@ pub fn read() -> String {
 }
 
 fn ask_for_piece_for(player: Player) -> char {
-	print!("{}", format!("{}", "\nChoose a piece (Queen/Rook/Bishop/Knight) >> ".bright_purple()));
+	print!("{}", format!("{}", "Choose a piece (Queen/Rook/Bishop/Knight) >> ".bright_purple()));
 	loop {
 		let input = read().to_lowercase();
 		return match &input[..] {

@@ -6,22 +6,22 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 19:52:59 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/03/11 00:29:29 by lfalkau          ###   ########.fr       */
+/*   Updated: 2020/03/11 01:47:56 by lfalkau          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 use colored::*;
-use crate::move_general::{Move};
+use crate::move_general::{Move, check_for};
 
 pub const DEFAULT_BOARD: [[char; 8]; 8] = [
-	['R', 'H', 'B', 'Q', 'K', 'B', 'H', 'R'],
-	['P', 'P', 'P', 'P', 'P', 'P', 'P', 'p'],
+	['R', '.', '.', '.', 'K', '.', '.', 'R'],
+	['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
 	['.', '.', '.', '.', '.', '.', '.', '.'],
 	['.', '.', '.', '.', '.', '.', '.', '.'],
 	['.', '.', '.', '.', '.', '.', '.', '.'],
 	['.', '.', '.', '.', '.', '.', '.', '.'],
-	['p', 'p', 'p', 'p', 'p', 'p', 'p', 'P'],
-	['r', 'h', 'b', 'q', 'k', 'b', 'h', 'r']
+	['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
+	['r', '.', '.', '.', 'k', '.', '.', 'r']
 ];
 
 #[derive(Copy, Clone)]
@@ -31,6 +31,7 @@ pub struct Board {
 	pub black_eaten: [char; 15],
 	pub nb_white_eaten: usize,
 	pub white_eaten: [char; 15],
+	pub moved_flags: u8,
 }
 
 #[derive(Copy, Clone)]
@@ -169,6 +170,18 @@ impl Board {
 		//Perform move
 		self.raw[m.to.y as usize][m.to.x as usize] = self.raw[m.from.y as usize][m.from.x as usize];
 		self.raw[m.from.y as usize][m.from.x as usize] = '.';
+		//Black left rook
+		if m.from.y == 0 && m.from.x == 0 { self.moved_flags = self.moved_flags | 0b1000_0000; }
+		//Black right rook
+		if m.from.y == 0 && m.from.x == 7 { self.moved_flags = self.moved_flags | 0b0100_0000; }
+		//Black king
+		if m.from.y == 0 && m.from.x == 4 { self.moved_flags = self.moved_flags | 0b0010_0000; }
+		//White left rook
+		if m.from.y == 7 && m.from.x == 0 { self.moved_flags = self.moved_flags | 0b0000_1000; }
+		//White right rook
+		if m.from.y == 7 && m.from.x == 7 { self.moved_flags = self.moved_flags | 0b0000_0100; }
+		//White king
+		if m.from.y == 7 && m.from.x == 4 { self.moved_flags = self.moved_flags | 0b0000_0010; }
 	}
 
 	pub fn get_score_for(&self, p: Player) -> i32 {
@@ -201,6 +214,56 @@ impl Board {
 		for i in 0..8 {
 			if self.at(i, 0) == 'p' || self.at(i, 7) == 'P' {
 				return true;
+			}
+		}
+		return false;
+	}
+
+	pub fn small_castle_for(&mut self, player: Player) -> bool {
+		if player == Player::Black {
+			if self.moved_flags & 0b0110_0000 == 0 && self.at(5, 0) == '.' && self.at(6, 0) == '.' {
+				let mut b1 = self.clone(); b1.perform_move(Move {from: Box {x: 4, y: 0}, to: Box {x: 5, y: 0}});
+				let mut b2 = self.clone(); b2.perform_move(Move {from: Box {x: 4, y: 0}, to: Box {x: 6, y: 0}});
+				if !check_for(player, &b1) && !check_for(player, &b2) {
+					self.perform_move(Move {from: Box {x: 4, y: 0}, to: Box {x: 6, y: 0}});
+					self.perform_move(Move {from: Box {x: 7, y: 0}, to: Box {x: 5, y: 0}});
+					return true;
+				}
+			}
+		} else {
+			if self.moved_flags & 0b0000_0110 == 0 && self.at(5, 7) == '.' && self.at(6, 7) == '.' {
+				let mut b1 = self.clone(); b1.perform_move(Move {from: Box {x: 4, y: 7}, to: Box {x: 5, y: 7}});
+				let mut b2 = self.clone(); b2.perform_move(Move {from: Box {x: 4, y: 7}, to: Box {x: 6, y: 7}});
+				if !check_for(player, &b1) && !check_for(player, &b2) {
+					self.perform_move(Move {from: Box {x: 4, y: 7}, to: Box {x: 6, y: 7}});
+					self.perform_move(Move {from: Box {x: 7, y: 7}, to: Box {x: 5, y: 7}});
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	pub fn big_castle_for(&mut self, player: Player) -> bool {
+		if player == Player::Black {
+			if self.moved_flags & 0b1010_0000 == 0 && self.at(1, 0) == '.' && self.at(2, 0) == '.' && self.at(3, 0) == '.' {
+				let mut b1 = self.clone(); b1.perform_move(Move {from: Box {x: 4, y: 0}, to: Box {x: 3, y: 0}});
+				let mut b2 = self.clone(); b2.perform_move(Move {from: Box {x: 4, y: 0}, to: Box {x: 2, y: 0}});
+				if !check_for(player, &b1) && !check_for(player, &b2) {
+					self.perform_move(Move {from: Box {x: 4, y: 0}, to: Box {x: 2, y: 0}});
+					self.perform_move(Move {from: Box {x: 0, y: 0}, to: Box {x: 3, y: 0}});
+					return true;
+				}
+			}
+		} else {
+			if self.moved_flags & 0b0000_1010 == 0 && self.at(1, 7) == '.' && self.at(2, 7) == '.' && self.at(3, 7) == '.' {
+				let mut b1 = self.clone(); b1.perform_move(Move {from: Box {x: 4, y: 7}, to: Box {x: 3, y: 7}});
+				let mut b2 = self.clone(); b2.perform_move(Move {from: Box {x: 4, y: 7}, to: Box {x: 2, y: 7}});
+				if !check_for(player, &b1) && !check_for(player, &b2) {
+					self.perform_move(Move {from: Box {x: 4, y: 7}, to: Box {x: 2, y: 7}});
+					self.perform_move(Move {from: Box {x: 0, y: 7}, to: Box {x: 3, y: 7}});
+					return true;
+				}
 			}
 		}
 		return false;
