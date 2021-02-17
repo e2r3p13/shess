@@ -4,7 +4,7 @@
 
 ## Overview
 
-Shess is a bit like chess, except you play it in a shell.  
+Shess is a bit like Chess, except you play it in a shell.  
 [![Image](https://i.goopics.net/aGJ5Z.png)](https://goopics.net/i/aGJ5Z)
 
 
