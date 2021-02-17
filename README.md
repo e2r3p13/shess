@@ -1,4 +1,3 @@
-
 # Shess
 
   
@@ -39,4 +38,4 @@ Then you'll be able to run Shess
 
 - Made in France
 
-- Made in the morning
+- Made in the evening
