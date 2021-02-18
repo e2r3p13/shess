@@ -6,7 +6,7 @@
 /*   By: lfalkau <lfalkau@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/26 17:50:17 by lfalkau           #+#    #+#             */
-/*   Updated: 2020/03/11 01:47:17 by lfalkau          ###   ########.fr       */
+/*   Updated: 2021/02/18 22:52:38 by bccyv            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,8 +84,8 @@ fn play(player: Player, board: &mut Board) -> bool
 			"print" => { board.print(); continue },
 			"exit" => { process::exit(0); },
 			"quit" => return false,
-			"help" => { println!("{}", format!("{}", "Commands: print, exit, quit or move (Format: 'e2 e4' or '[b/s] castle')".bright_purple())); continue },
-			"big castle" | "b castle" | "bc" => {
+			"help" => { println!("{}", format!("{}", "Commands: print, exit, quit or move (Format: 'e2 e4' or '[l/s] castle')".bright_purple())); continue },
+			"long castle" | "l castle" | "lc" => {
 				if board.big_castle_for(player) {
 					return true;
 				} else {
@@ -93,7 +93,7 @@ fn play(player: Player, board: &mut Board) -> bool
 					continue;
 				}
 			},
-			"small castle" | "s castle" | "sc" => {
+			"short castle" | "s castle" | "sc" => {
 				if board.small_castle_for(player) {
 					return true;
 				} else {
