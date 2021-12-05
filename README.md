@@ -1,12 +1,6 @@
 # Shess
 
-  
-
-## Overview
-
 Shess is a bit like Chess, except you play it in a shell.  
-[![Image](https://i.goopics.net/aGJ5Z.png)](https://goopics.net/i/aGJ5Z)
-
 
 ## Usage
 
@@ -21,9 +15,7 @@ First you may need to install Rust
 Then you'll be able to run Shess
 
 	git clone https://gitlab.com/Bccyv/nethack.git
-
 	cd nethack
-
 	cargo run
 
 ## How to play
